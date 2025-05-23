@@ -1,0 +1,11 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.event-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.event-card:hover {
+  transform: scale(1.05);
+}
