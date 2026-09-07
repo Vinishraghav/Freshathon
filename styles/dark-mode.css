@@ -1,0 +1,179 @@
+/* Dark Mode Styles for Eventsphere */
+
+.dark-mode {
+    --light-color: #121212;
+    --dark-color: #f8f9fa;
+    --gray-100: #333;
+    --gray-200: #444;
+    --gray-300: #555;
+    --gray-400: #666;
+    --gray-500: #777;
+    --gray-600: #888;
+    --gray-700: #aaa;
+    --gray-800: #ccc;
+    --gray-900: #eee;
+    
+    color: var(--gray-300);
+    background-color: var(--light-color);
+}
+
+/* Text colors */
+.dark-mode h1, 
+.dark-mode h2, 
+.dark-mode h3, 
+.dark-mode h4, 
+.dark-mode h5, 
+.dark-mode h6 {
+    color: var(--gray-100);
+}
+
+.dark-mode .text-muted {
+    color: var(--gray-500) !important;
+}
+
+/* Background colors */
+.dark-mode .bg-light {
+    background-color: #1e1e1e !important;
+}
+
+.dark-mode .bg-white {
+    background-color: #252525 !important;
+}
+
+.dark-mode .bg-dark {
+    background-color: #000 !important;
+}
+
+/* Cards */
+.dark-mode .card {
+    background-color: #252525;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .card-body,
+.dark-mode .card-footer {
+    background-color: #252525;
+    color: var(--gray-300);
+}
+
+.dark-mode .card-title {
+    color: var(--gray-100);
+}
+
+.dark-mode .card-text {
+    color: var(--gray-400);
+}
+
+/* Navbar */
+.dark-mode .navbar-light {
+    background-color: #252525 !important;
+}
+
+.dark-mode .navbar-light .navbar-brand,
+.dark-mode .navbar-light .navbar-nav .nav-link {
+    color: var(--gray-100);
+}
+
+/* Form controls */
+.dark-mode .form-control {
+    background-color: #333;
+    border-color: #444;
+    color: var(--gray-200);
+}
+
+.dark-mode .form-control:focus {
+    background-color: #3a3a3a;
+    color: var(--gray-100);
+}
+
+/* Buttons */
+.dark-mode .btn-light {
+    background-color: #333;
+    border-color: #444;
+    color: var(--gray-200);
+}
+
+.dark-mode .btn-light:hover {
+    background-color: #444;
+    border-color: #555;
+    color: var(--gray-100);
+}
+
+.dark-mode .btn-outline-light {
+    border-color: #444;
+    color: var(--gray-200);
+}
+
+.dark-mode .btn-outline-light:hover {
+    background-color: #444;
+    color: var(--gray-100);
+}
+
+/* Modal */
+.dark-mode .modal-content {
+    background-color: #252525;
+    color: var(--gray-300);
+}
+
+.dark-mode .modal-header,
+.dark-mode .modal-footer {
+    border-color: #333;
+}
+
+.dark-mode .close {
+    color: var(--gray-300);
+}
+
+/* Tables */
+.dark-mode .table {
+    color: var(--gray-300);
+}
+
+.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .table th,
+.dark-mode .table td {
+    border-color: #333;
+}
+
+/* List groups */
+.dark-mode .list-group-item {
+    background-color: #252525;
+    border-color: #333;
+    color: var(--gray-300);
+}
+
+/* Inputs */
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+    background-color: #333 !important;
+    border-color: #444 !important;
+    color: var(--gray-200) !important;
+}
+
+.dark-mode input:focus,
+.dark-mode select:focus,
+.dark-mode textarea:focus {
+    background-color: #3a3a3a !important;
+    color: var(--gray-100) !important;
+}
+
+/* Dark mode toggle */
+.dark-mode .form-check-input {
+    background-color: #333;
+    border-color: #444;
+}
+
+.dark-mode .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Transitions */
+.dark-mode,
+.dark-mode * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

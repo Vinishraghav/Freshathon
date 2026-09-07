@@ -5,17 +5,13 @@ Eventsphere is a full-stack web application for event discovery and management, 
 ## 🚀 Features
 
 ### For Students (General Users)
-
 - View all events across India
 - Explore nearby events within 100km radius
-- Filter events by category, date, and location
+- Filter events by category
 - View detailed event information
-- Save favorite events
-- Set email reminders for events
 - Share events on social media
 
 ### For College/Venue Organizers
-
 - Secure login system
 - Dashboard to manage events
 - Create, edit, and delete events
@@ -25,13 +21,11 @@ Eventsphere is a full-stack web application for event discovery and management, 
 ## 🛠️ Tech Stack
 
 ### Frontend
-
 - HTML, CSS, JavaScript
 - Bootstrap 5 for responsive UI
 - Firebase Authentication
 
 ### Backend
-
 - Python (Flask framework)
 - Firebase Firestore for data storage
 - Firebase Storage for images
@@ -40,54 +34,52 @@ Eventsphere is a full-stack web application for event discovery and management, 
 
 ```
 eventsphere/
-├── app.py                # Main Flask application
-├── firebase_auth.py      # Firebase authentication utilities
-├── requirements.txt      # Python dependencies
-├── templates/            # HTML templates
-│   ├── index.html        # Home page
-│   ├── login.html        # Login page
-│   ├── register.html     # Registration page
-│   └── dashboard.html    # User dashboard
-├── static/               # Static assets
-│   ├── css/              # CSS files
-│   │   └── style.css     # Main stylesheet
-│   └── js/               # JavaScript files
-│       └── main.js       # Main JavaScript file
-└── README.md             # Project documentation
+├── app.py                 # Main Flask application
+├── requirements.txt       # Python dependencies
+├── serviceAccountKey.json # Firebase credentials
+├── sample_events.json     # Sample event data
+├── static/                # Static assets
+│   ├── css/               # CSS stylesheets
+│   ├── js/                # JavaScript files
+│   └── img/               # Images
+└── templates/             # HTML templates
+    ├── base.html          # Base template
+    ├── index.html         # Home page
+    ├── events.html        # Events listing page
+    ├── event_details.html # Event details page
+    ├── student_login.html # Student login page
+    ├── college_login.html # College login page
+    ├── admin_dashboard.html # Admin dashboard
+    ├── create_event.html  # Create event page
+    └── edit_event.html    # Edit event page
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Python (v3.8 or higher)
+- Python 3.8 or higher
 - Firebase account
 
 ### Installation
 
 1. Clone the repository
-
 ```bash
 git clone https://github.com/yourusername/eventsphere.git
 cd eventsphere
 ```
 
 2. Install dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
 
 3. Set up Firebase
-
    - Create a Firebase project
    - Enable Authentication (Email/Password)
    - Create Firestore database
    - Generate service account key and save as `serviceAccountKey.json`
-   - Update the path in `firebase_auth.py`
 
-4. Start the application
-
+4. Run the application
 ```bash
 python app.py
 ```
@@ -97,36 +89,22 @@ python app.py
 ## 🌟 Key Features Explained
 
 ### Geolocation
-
 The application uses the browser's geolocation API to find the user's current location and displays events within a 100km radius.
 
 ### Event Categories
-
 Events are categorized to help users find relevant events quickly. Categories include Technology, Business, Education, Arts, Music, Sports, Food, and Health.
 
-### Date Filtering
-
-Users can filter events by date range, including options for today, tomorrow, this week, this month, or a custom date range.
-
-### Event Reminders
-
-Users can set email reminders for events they're interested in, with options to be reminded 1 hour, 3 hours, 1 day, 2 days, or 1 week before the event.
-
-### Event Sharing
-
-Events can be shared on social media platforms including Facebook, Twitter, WhatsApp, and LinkedIn.
-
 ### Dark Mode
-
 The application includes a dark mode toggle for better user experience in low-light environments.
 
-## 👥 Contributors
+### Responsive Design
+The application is fully responsive and works well on mobile devices, tablets, and desktops.
 
+## 👥 Contributors
 - [Your Name](https://github.com/yourusername)
 - [Team Member 1](https://github.com/teammember1)
 - [Team Member 2](https://github.com/teammember2)
 - [Team Member 3](https://github.com/teammember3)
 
 ## 📄 License
-
 This project is licensed under the MIT License - see the LICENSE file for details.

@@ -1,0 +1,361 @@
+/**
+ * Map Components Styles
+ * 
+ * This file contains styles for map-related components like
+ * EnhancedMap, LocationSearch, and other map UI elements.
+ */
+
+/* Enhanced Map Container */
+.enhanced-map-container {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Map Element */
+.map-element {
+  width: 100%;
+  height: 400px;
+  background-color: #f8f9fa;
+}
+
+body.dark-mode .map-element {
+  background-color: #2a2a2a;
+}
+
+/* Map Loading Overlay */
+.map-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+body.dark-mode .map-loading {
+  background-color: rgba(42, 42, 42, 0.8);
+}
+
+/* Info Window Styles */
+.map-info-window {
+  padding: 5px;
+  max-width: 250px;
+}
+
+.info-window-title {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.info-window-detail {
+  margin-bottom: 5px;
+  font-size: 0.875rem;
+}
+
+.info-window-actions {
+  margin-top: 10px;
+}
+
+/* Directions Panel */
+.directions-panel {
+  margin-bottom: 15px;
+}
+
+.directions-info {
+  font-size: 0.875rem;
+}
+
+/* Location Search */
+.location-search-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.location-predictions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 5px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.location-predictions .list-group-item {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.location-predictions .list-group-item:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+body.dark-mode .location-predictions .list-group-item:hover {
+  background-color: rgba(94, 123, 255, 0.2);
+}
+
+/* Map Controls */
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 5px;
+}
+
+body.dark-mode .map-controls {
+  background-color: #333;
+}
+
+.map-control-button {
+  background-color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px;
+  cursor: pointer;
+  color: #555;
+}
+
+.map-control-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+body.dark-mode .map-control-button {
+  background-color: #444;
+  color: #ddd;
+}
+
+body.dark-mode .map-control-button:hover {
+  background-color: #555;
+  color: white;
+}
+
+.map-control-button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+body.dark-mode .map-control-button.active {
+  background-color: var(--primary-dark);
+}
+
+/* Nearby Places Panel */
+.nearby-places-panel {
+  margin-top: 15px;
+}
+
+.nearby-places-panel .list-group-item {
+  padding: 0.75rem;
+}
+
+/* Map Legend */
+.map-legend {
+  position: absolute;
+  bottom: 30px;
+  left: 10px;
+  z-index: 5;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  font-size: 0.75rem;
+  max-width: 200px;
+}
+
+body.dark-mode .map-legend {
+  background-color: #333;
+  color: #ddd;
+}
+
+.map-legend-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 0.875rem;
+}
+
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.map-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Map Fullscreen Button */
+.map-fullscreen-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 5;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555;
+  border: none;
+}
+
+.map-fullscreen-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+body.dark-mode .map-fullscreen-button {
+  background-color: #444;
+  color: #ddd;
+}
+
+body.dark-mode .map-fullscreen-button:hover {
+  background-color: #555;
+  color: white;
+}
+
+/* Map in Fullscreen Mode */
+.map-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: white;
+}
+
+body.dark-mode .map-fullscreen {
+  background-color: #121212;
+}
+
+.map-fullscreen .map-element {
+  height: 100vh;
+}
+
+.map-fullscreen .map-fullscreen-button {
+  position: fixed;
+}
+
+/* Map Popup */
+.map-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.map-popup-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.dark-mode .map-popup-content {
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
+.map-popup-header {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+body.dark-mode .map-popup-header {
+  border-bottom-color: #444;
+}
+
+.map-popup-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.map-popup-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555;
+}
+
+body.dark-mode .map-popup-close {
+  color: #ddd;
+}
+
+.map-popup-body {
+  flex: 1;
+  overflow: auto;
+}
+
+.map-popup-footer {
+  padding: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+body.dark-mode .map-popup-footer {
+  border-top-color: #444;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .map-element {
+    height: 300px;
+  }
+  
+  .map-popup-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .directions-panel .card-header {
+    padding: 0.5rem;
+  }
+  
+  .directions-panel .card-body {
+    padding: 0.75rem;
+  }
+}

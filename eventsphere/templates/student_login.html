@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Login - Eventsphere{% endblock %}
+
+{% block content %}
+<div class="container login-container">
+    <div class="card login-card">
+        <div class="login-header">
+            <i class="bi bi-mortarboard"></i>
+            <h2 class="mt-3">Student Login</h2>
+            <p class="text-muted">Sign in to discover events</p>
+        </div>
+        
+        <form method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="invalid-feedback">
+                        Please enter your password.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Sign In
+                </button>
+            </div>
+        </form>
+        
+        <hr class="my-4">
+        
+        <div class="text-center">
+            <p>Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a></p>
+            <p class="mb-0">Are you an organizer? <a href="{{ url_for('college_login') }}">Login here</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Student Registration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="registerName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="registerName" name="name" required>
+                        <div class="invalid-feedback">
+                            Please enter your full name.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="registerEmail" name="email" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password" required minlength="6">
+                        <div class="invalid-feedback">
+                            Password must be at least 6 characters.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="registerConfirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="registerConfirmPassword" name="confirmPassword" required>
+                        <div class="invalid-feedback">
+                            Passwords do not match.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                        <label class="form-check-label" for="termsCheck">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                        <div class="invalid-feedback">
+                            You must agree to the terms and conditions.
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitRegistration()">Register</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Password confirmation validation
+    document.getElementById('registerConfirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = this.value;
+        
+        if (password !== confirmPassword) {
+            this.setCustomValidity('Passwords do not match');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+    
+    // Registration form submission
+    function submitRegistration() {
+        const form = document.getElementById('registerForm');
+        
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+        
+        // In a real application, you would submit this to your backend
+        // For now, we'll just show an alert
+        alert('Registration functionality is not implemented in this demo. Please contact the administrator to create an account.');
+        
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+        modal.hide();
+    }
+</script>
+{% endblock %}

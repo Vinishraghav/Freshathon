@@ -1,0 +1,510 @@
+{% extends "layout.html" %}
+{% block title %}Create Event - Eventsphere{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+  .create-event-header {
+    background-color: var(--primary-color);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  .form-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .form-section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--gray-light);
+  }
+  
+  .image-preview {
+    width: 100%;
+    height: 200px;
+    border-radius: 10px;
+    background-color: var(--gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  
+  .image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  .upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  
+  #map {
+    height: 300px;
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 1rem;
+  }
+  
+  .ticket-type {
+    border: 1px solid var(--gray-light);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  
+  .remove-ticket {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    color: var(--danger);
+  }
+  
+  .preview-card {
+    position: sticky;
+    top: 100px;
+  }
+  
+  .preview-image {
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Create Event Header -->
+<div class="create-event-header">
+  <div class="container">
+    <h1 class="text-center mb-3">Create a New Event</h1>
+    <p class="text-center lead">Share your event with the community and connect with attendees</p>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <form id="create-event-form" action="{{ url_for('create_event') }}" method="post" enctype="multipart/form-data">
+        <!-- Basic Information -->
+        <div class="form-section">
+          <h3 class="form-section-title">Basic Information</h3>
+          
+          <div class="mb-3">
+            <label for="event-title" class="form-label">Event Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="event-title" name="title" required>
+            <div class="form-text">Choose a clear, descriptive title for your event</div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="event-category" class="form-label">Category <span class="text-danger">*</span></label>
+            <select class="form-select" id="event-category" name="category" required>
+              <option value="" selected disabled>Select a category</option>
+              <option value="Technology">Technology</option>
+              <option value="Arts">Arts</option>
+              <option value="Education">Education</option>
+              <option value="Business">Business</option>
+              <option value="Sports">Sports</option>
+              <option value="Health">Health</option>
+              <option value="Food">Food</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="event-description" class="form-label">Description <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="event-description" name="description" rows="5" required></textarea>
+            <div class="form-text">Provide a detailed description of your event</div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Event Image <span class="text-danger">*</span></label>
+            <div class="image-preview" id="image-preview">
+              <i class="fas fa-image fa-3x text-muted"></i>
+            </div>
+            <div class="upload-btn-wrapper">
+              <button class="btn btn-outline-primary">
+                <i class="fas fa-upload me-2"></i>Upload Image
+              </button>
+              <input type="file" name="image" id="event-image" accept="image/*" required>
+            </div>
+            <div class="form-text">Upload a high-quality image (recommended size: 1200x600px)</div>
+          </div>
+        </div>
+        
+        <!-- Date and Time -->
+        <div class="form-section">
+          <h3 class="form-section-title">Date and Time</h3>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="event-date" class="form-label">Event Date <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="event-date" name="date" placeholder="Select date" required>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="event-time" class="form-label">Event Time <span class="text-danger">*</span></label>
+              <div class="row">
+                <div class="col-6">
+                  <input type="text" class="form-control" id="event-start-time" name="start_time" placeholder="Start time" required>
+                </div>
+                <div class="col-6">
+                  <input type="text" class="form-control" id="event-end-time" name="end_time" placeholder="End time" required>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Location -->
+        <div class="form-section">
+          <h3 class="form-section-title">Location</h3>
+          
+          <div class="mb-3">
+            <label for="event-venue" class="form-label">Venue Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="event-venue" name="venue" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="event-address" class="form-label">Address <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="event-address" name="address" required>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label for="event-city" class="form-label">City <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="event-city" name="city" required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="event-state" class="form-label">State <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="event-state" name="state" required>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Pin Location on Map</label>
+            <div id="map"></div>
+            <input type="hidden" id="event-latitude" name="latitude" value="12.9716">
+            <input type="hidden" id="event-longitude" name="longitude" value="77.5946">
+          </div>
+        </div>
+        
+        <!-- Tickets -->
+        <div class="form-section">
+          <h3 class="form-section-title">Tickets</h3>
+          
+          <div id="ticket-types-container">
+            <div class="ticket-type">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Ticket Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" name="ticket_name[]" placeholder="e.g. General Admission" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Price (₹) <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" name="ticket_price[]" min="0" value="0" required>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Quantity Available <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" name="ticket_quantity[]" min="1" value="100" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Description</label>
+                  <input type="text" class="form-control" name="ticket_description[]" placeholder="e.g. Access to all sessions">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" id="add-ticket-type" class="btn btn-outline-primary mt-2">
+            <i class="fas fa-plus me-2"></i>Add Another Ticket Type
+          </button>
+        </div>
+        
+        <!-- Additional Information -->
+        <div class="form-section">
+          <h3 class="form-section-title">Additional Information</h3>
+          
+          <div class="mb-3">
+            <label for="event-organizer" class="form-label">Organizer Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="event-organizer" name="organizer" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="event-contact" class="form-label">Contact Email <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="event-contact" name="contact_email" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="event-website" class="form-label">Website (Optional)</label>
+            <input type="url" class="form-control" id="event-website" name="website" placeholder="https://...">
+          </div>
+          
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="event-featured" name="featured">
+            <label class="form-check-label" for="event-featured">Feature this event (additional charges may apply)</label>
+          </div>
+        </div>
+        
+        <div class="d-grid gap-2 mb-5">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-calendar-plus me-2"></i>Create Event
+          </button>
+          <button type="button" class="btn btn-outline-secondary">Save as Draft</button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Preview Card -->
+    <div class="col-lg-4">
+      <div class="card preview-card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Event Preview</h5>
+        </div>
+        <img src="https://via.placeholder.com/400x200?text=Event+Image" class="preview-image" id="preview-image" alt="Event Preview">
+        <div class="card-body">
+          <h5 class="card-title" id="preview-title">Event Title</h5>
+          
+          <div class="mb-3">
+            <p class="card-text mb-1 small text-muted">
+              <i class="far fa-calendar-alt me-2 text-primary"></i><span id="preview-date">Date</span>
+            </p>
+            <p class="card-text mb-1 small text-muted">
+              <i class="far fa-clock me-2 text-primary"></i><span id="preview-time">Time</span>
+            </p>
+            <p class="card-text mb-1 small text-muted">
+              <i class="fas fa-map-marker-alt me-2 text-primary"></i><span id="preview-venue">Venue</span>
+            </p>
+            <p class="card-text mb-1 small text-muted">
+              <i class="fas fa-tag me-2 text-primary"></i><span id="preview-price">Price</span>
+            </p>
+          </div>
+          
+          <p class="card-text" id="preview-description">Event description will appear here.</p>
+          
+          <div class="alert alert-info small">
+            <i class="fas fa-info-circle me-2"></i>This is a preview of how your event will appear to attendees.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize date picker
+    flatpickr("#event-date", {
+      dateFormat: "M d, Y",
+      minDate: "today"
+    });
+    
+    // Initialize time pickers
+    flatpickr("#event-start-time", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "h:i K",
+      minuteIncrement: 15
+    });
+    
+    flatpickr("#event-end-time", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "h:i K",
+      minuteIncrement: 15
+    });
+    
+    // Initialize map
+    const map = L.map('map').setView([12.9716, 77.5946], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Add marker
+    let marker = L.marker([12.9716, 77.5946], {
+      draggable: true
+    }).addTo(map);
+    
+    // Update coordinates when marker is dragged
+    marker.on('dragend', function(event) {
+      const position = marker.getLatLng();
+      document.getElementById('event-latitude').value = position.lat;
+      document.getElementById('event-longitude').value = position.lng;
+    });
+    
+    // Add ticket type
+    const addTicketButton = document.getElementById('add-ticket-type');
+    const ticketContainer = document.getElementById('ticket-types-container');
+    
+    addTicketButton.addEventListener('click', function() {
+      const ticketType = document.createElement('div');
+      ticketType.className = 'ticket-type';
+      ticketType.innerHTML = `
+        <span class="remove-ticket"><i class="fas fa-times-circle"></i></span>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ticket Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="ticket_name[]" placeholder="e.g. VIP Access" required>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Price (₹) <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" name="ticket_price[]" min="0" value="0" required>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Quantity Available <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" name="ticket_quantity[]" min="1" value="50" required>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-control" name="ticket_description[]" placeholder="e.g. Premium seating and exclusive perks">
+          </div>
+        </div>
+      `;
+      
+      ticketContainer.appendChild(ticketType);
+      
+      // Add event listener to remove button
+      const removeButton = ticketType.querySelector('.remove-ticket');
+      removeButton.addEventListener('click', function() {
+        ticketContainer.removeChild(ticketType);
+      });
+    });
+    
+    // Image preview
+    const imageInput = document.getElementById('event-image');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImage = document.getElementById('preview-image');
+    
+    imageInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Event Image">`;
+          previewImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Live preview updates
+    const eventTitle = document.getElementById('event-title');
+    const eventDescription = document.getElementById('event-description');
+    const eventDate = document.getElementById('event-date');
+    const eventStartTime = document.getElementById('event-start-time');
+    const eventEndTime = document.getElementById('event-end-time');
+    const eventVenue = document.getElementById('event-venue');
+    
+    const previewTitle = document.getElementById('preview-title');
+    const previewDescription = document.getElementById('preview-description');
+    const previewDate = document.getElementById('preview-date');
+    const previewTime = document.getElementById('preview-time');
+    const previewVenue = document.getElementById('preview-venue');
+    const previewPrice = document.getElementById('preview-price');
+    
+    eventTitle.addEventListener('input', function() {
+      previewTitle.textContent = this.value || 'Event Title';
+    });
+    
+    eventDescription.addEventListener('input', function() {
+      previewDescription.textContent = this.value || 'Event description will appear here.';
+    });
+    
+    eventDate.addEventListener('change', function() {
+      previewDate.textContent = this.value || 'Date';
+    });
+    
+    function updateTime() {
+      const startTime = eventStartTime.value;
+      const endTime = eventEndTime.value;
+      
+      if (startTime && endTime) {
+        previewTime.textContent = `${startTime} - ${endTime}`;
+      } else if (startTime) {
+        previewTime.textContent = startTime;
+      } else if (endTime) {
+        previewTime.textContent = endTime;
+      } else {
+        previewTime.textContent = 'Time';
+      }
+    }
+    
+    eventStartTime.addEventListener('change', updateTime);
+    eventEndTime.addEventListener('change', updateTime);
+    
+    eventVenue.addEventListener('input', function() {
+      previewVenue.textContent = this.value || 'Venue';
+    });
+    
+    // Update price preview based on first ticket type
+    document.addEventListener('input', function(e) {
+      if (e.target.name === 'ticket_price[]') {
+        const ticketPrices = document.querySelectorAll('[name="ticket_price[]"]');
+        if (ticketPrices.length > 0) {
+          const firstPrice = parseInt(ticketPrices[0].value);
+          
+          if (firstPrice === 0) {
+            previewPrice.textContent = 'Free';
+          } else {
+            previewPrice.textContent = `₹${firstPrice}`;
+            
+            if (ticketPrices.length > 1) {
+              previewPrice.textContent += ' onwards';
+            }
+          }
+        }
+      }
+    });
+    
+    // Form validation
+    const form = document.getElementById('create-event-form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // In a real app, you would submit the form data to the server
+      // For now, just show a success message
+      alert('Event created successfully! In a real app, this would save the event to the database.');
+      
+      // Redirect to events page
+      window.location.href = '/';
+    });
+  });
+</script>
+{% endblock %}

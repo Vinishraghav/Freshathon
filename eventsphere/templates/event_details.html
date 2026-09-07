@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{% block title %}Event Details - Eventsphere{% endblock %}
+
+{% block content %}
+<div class="container" id="event-details-container">
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading event details...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const eventId = '{{ event_id }}';
+        
+        // Fetch event details
+        fetch(`/api/events`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(events => {
+                const event = events.find(e => e.id === eventId);
+                if (event) {
+                    displayEventDetails(event);
+                } else {
+                    throw new Error('Event not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching event details:', error);
+                document.getElementById('event-details-container').innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        Failed to load event details. Please try again later.
+                    </div>
+                    <div class="text-center">
+                        <a href="/events" class="btn btn-primary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Events
+                        </a>
+                    </div>
+                `;
+            });
+    });
+    
+    function displayEventDetails(event) {
+        const container = document.getElementById('event-details-container');
+        const categoryClass = event.category ? event.category.toLowerCase() : '';
+        
+        const eventDate = new Date(event.date);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = eventDate.toLocaleDateString(undefined, options);
+        
+        let html = `
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/events">Events</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">${event.title}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="badge category-badge ${categoryClass}">${event.category || 'Event'}</span>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <img src="${event.image || 'https://source.unsplash.com/random/800x600/?event'}" class="img-fluid event-details-img mb-4" alt="${event.title}">
+                    
+                    <h1 class="mb-3">${event.title}</h1>
+                    
+                    <div class="event-meta">
+                        <div class="event-meta-item">
+                            <i class="bi bi-calendar-event"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="event-meta-item">
+                            <i class="bi bi-clock"></i>
+                            <span>${event.time}</span>
+                        </div>
+                        <div class="event-meta-item">
+                            <i class="bi bi-geo-alt"></i>
+                            <span>${event.venue}</span>
+                        </div>
+                        <div class="event-meta-item">
+                            <i class="bi bi-building"></i>
+                            <span>${event.organizerName}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">About This Event</h5>
+                            <p class="card-text">${event.description}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="${event.registrationLink}" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+                            <i class="bi bi-box-arrow-up-right me-2"></i>
+                            Register Now
+                        </a>
+                        <a href="/events" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Events
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Event Location</h5>
+                            <div class="ratio ratio-4x3 mb-3">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(event.venue)}" 
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                            <p class="mb-0">
+                                <i class="bi bi-geo-alt me-2"></i>
+                                ${event.venue}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Share This Event</h5>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title)}&url=${encodeURIComponent(window.location.href)}" class="btn btn-outline-info" target="_blank" rel="noopener noreferrer">
+                                    <i class="bi bi-twitter-x"></i>
+                                </a>
+                                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(event.title + ' - ' + window.location.href)}" class="btn btn-outline-success" target="_blank" rel="noopener noreferrer">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="mailto:?subject=${encodeURIComponent('Check out this event: ' + event.title)}&body=${encodeURIComponent('I thought you might be interested in this event: ' + event.title + '\n\n' + window.location.href)}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-envelope"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Organizer</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-building fs-1 text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">${event.organizerName}</h6>
+                                    <p class="text-muted mb-0">Event Organizer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h3 class="mb-4">Similar Events</h3>
+                <div id="similar-events" class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col-12 text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        
+        // Fetch similar events (same category)
+        fetch('/api/events')
+            .then(response => response.json())
+            .then(events => {
+                const similarEvents = events
+                    .filter(e => e.category === event.category && e.id !== event.id)
+                    .slice(0, 3);
+                
+                if (similarEvents.length > 0) {
+                    let similarHtml = '';
+                    
+                    similarEvents.forEach(similarEvent => {
+                        const categoryClass = similarEvent.category ? similarEvent.category.toLowerCase() : '';
+                        
+                        similarHtml += `
+                            <div class="col">
+                                <div class="card event-card h-100">
+                                    <div class="position-relative">
+                                        <img src="${similarEvent.image || 'https://source.unsplash.com/random/800x600/?event'}" class="card-img-top" alt="${similarEvent.title}">
+                                        <span class="badge category-badge ${categoryClass} position-absolute top-0 end-0 m-2">${similarEvent.category || 'Event'}</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${similarEvent.title}</h5>
+                                        <p class="card-date mb-1"><i class="bi bi-calendar-event me-2"></i>${formatDate(similarEvent.date)} at ${similarEvent.time}</p>
+                                        <p class="card-venue mb-2"><i class="bi bi-geo-alt me-2"></i>${similarEvent.venue}</p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top-0">
+                                        <a href="/events/${similarEvent.id}" class="btn btn-primary w-100">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('similar-events').innerHTML = similarHtml;
+                } else {
+                    document.getElementById('similar-events').innerHTML = '<div class="col-12"><p class="text-muted">No similar events found.</p></div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching similar events:', error);
+                document.getElementById('similar-events').innerHTML = '<div class="col-12"><p class="text-muted">Failed to load similar events.</p></div>';
+            });
+    }
+    
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+</script>
+{% endblock %}

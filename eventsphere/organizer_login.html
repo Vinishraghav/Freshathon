@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Login - Eventsphere</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+        
+        .login-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header i {
+            font-size: 3rem;
+            color: #4e54c8;
+        }
+        
+        .form-control:focus {
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 0.25rem rgba(78, 84, 200, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #4e54c8;
+            border-color: #4e54c8;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a40a5;
+            border-color: #3a40a5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-calendar-event me-2"></i>
+                Eventsphere
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">All Events</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person me-1"></i>
+                            Login
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
+                            <li>
+                                <a class="dropdown-item" href="student_login.html">
+                                    <i class="bi bi-mortarboard me-2"></i>
+                                    Student Login
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item active" href="organizer_login.html">
+                                    <i class="bi bi-building me-2"></i>
+                                    College/Organizer Login
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Login Form -->
+    <div class="container login-container">
+        <div class="card login-card">
+            <div class="login-header">
+                <i class="bi bi-building"></i>
+                <h2 class="mt-3">Organizer Login</h2>
+                <p class="text-muted">Sign in to manage your events</p>
+            </div>
+            
+            <form id="loginForm" class="needs-validation" novalidate>
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="invalid-feedback">
+                            Please enter your password.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Remember Me & Forgot Password -->
+                <div class="d-flex justify-content-between mb-4">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="text-decoration-none">Forgot password?</a>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                        Sign In
+                    </button>
+                </div>
+            </form>
+            
+            <hr class="my-4">
+            
+            <div class="text-center">
+                <p class="mb-0">Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register here</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Organizer Registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm" class="needs-validation" novalidate>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="organizationName" class="form-label">Organization Name</label>
+                                <input type="text" class="form-control" id="organizationName" name="organizationName" required>
+                                <div class="invalid-feedback">
+                                    Please enter your organization name.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="organizationType" class="form-label">Organization Type</label>
+                                <select class="form-select" id="organizationType" name="organizationType" required>
+                                    <option value="" selected disabled>Select type</option>
+                                    <option value="college">College/University</option>
+                                    <option value="company">Company</option>
+                                    <option value="ngo">NGO</option>
+                                    <option value="government">Government</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select your organization type.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="contactPerson" class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" id="contactPerson" name="contactPerson" required>
+                                <div class="invalid-feedback">
+                                    Please enter contact person name.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contactPhone" class="form-label">Contact Phone</label>
+                                <input type="tel" class="form-control" id="contactPhone" name="contactPhone" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid phone number.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="registerEmail" name="email" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="registerPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="registerPassword" name="password" required minlength="6">
+                                <div class="invalid-feedback">
+                                    Password must be at least 6 characters.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="registerConfirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="registerConfirmPassword" name="confirmPassword" required>
+                                <div class="invalid-feedback">
+                                    Passwords do not match.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                            <div class="invalid-feedback">
+                                Please enter your organization address.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                            <div class="invalid-feedback">
+                                You must agree to the terms and conditions.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitRegistration()">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Eventsphere</h5>
+                    <p>Discover events happening around you and across India.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Home</a></li>
+                        <li><a href="events.html" class="text-light">Events</a></li>
+                        <li><a href="#" class="text-light">About Us</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <div class="d-flex gap-3 fs-4">
+                        <a href="#" class="text-light"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-light"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-light"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Eventsphere. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const registerPassword = document.getElementById('registerPassword');
+            const registerConfirmPassword = document.getElementById('registerConfirmPassword');
+            
+            // Password confirmation validation
+            if (registerConfirmPassword) {
+                registerConfirmPassword.addEventListener('input', function() {
+                    if (registerPassword.value !== registerConfirmPassword.value) {
+                        registerConfirmPassword.setCustomValidity('Passwords do not match');
+                    } else {
+                        registerConfirmPassword.setCustomValidity('');
+                    }
+                });
+            }
+            
+            // Login form submission
+            loginForm.addEventListener('submit', function(event) {
+                if (!loginForm.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    event.preventDefault();
+                    // Simulate successful login
+                    alert('Login successful! Redirecting to dashboard...');
+                    window.location.href = 'organizer_dashboard.html';
+                }
+                
+                loginForm.classList.add('was-validated');
+            });
+        });
+        
+        // Registration form submission
+        function submitRegistration() {
+            const form = document.getElementById('registerForm');
+            
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+            
+            // Simulate successful registration
+            alert('Registration submitted successfully! We will review your application and contact you shortly.');
+            
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            modal.hide();
+        }
+    </script>
+</body>
+</html>

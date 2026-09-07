@@ -1,0 +1,305 @@
+{% extends "layout.html" %} {% from "components/event_card.html" import
+event_card %} {% block title %}Eventsphere - Discover Amazing Events{% endblock
+%} {% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="mb-4">Discover Amazing Events Near You</h1>
+        <p class="mb-4">
+          Join Eventsphere to find and participate in exciting events happening
+          around your campus and beyond. Connect with like-minded people and
+          never miss out on opportunities.
+        </p>
+        <div class="d-flex gap-3">
+          <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+            <i class="fas fa-rocket me-2"></i>Get Started
+          </a>
+          <a href="#features" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-info-circle me-2"></i>Learn More
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block">
+        <img
+          src="https://source.unsplash.com/random/600x400/?event"
+          alt="Events"
+          class="img-fluid rounded shadow"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="mb-3">Why Choose Eventsphere?</h2>
+        <p class="lead">
+          Our platform offers everything you need to discover, join, and
+          organize events.
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 feature-card">
+          <div class="card-body">
+            <i class="fas fa-search mb-4"></i>
+            <h3>Discover Events</h3>
+            <p class="card-text">
+              Find events that match your interests and schedule. Filter by
+              category, date, and location to find the perfect event for you.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 feature-card">
+          <div class="card-body">
+            <i class="fas fa-ticket-alt mb-4"></i>
+            <h3>Register Easily</h3>
+            <p class="card-text">
+              Quick and simple registration process for any event. Get
+              notifications and reminders for upcoming events you've registered
+              for.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 feature-card">
+          <div class="card-body">
+            <i class="fas fa-calendar-plus mb-4"></i>
+            <h3>Organize Events</h3>
+            <p class="card-text">
+              Create and manage your own events with our platform. Track
+              registrations, send updates, and promote your events easily.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Upcoming Events Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="mb-3">Upcoming Events</h2>
+        <p class="lead">Check out these exciting events happening soon</p>
+      </div>
+    </div>
+
+    <div class="row">
+      {% for event in events %}
+      <div class="col-md-4 mb-4">
+        <div
+          class="card h-100 event-card {% if event.featured %}border-primary featured-card{% endif %}"
+        >
+          <div class="position-relative overflow-hidden">
+            <img
+              src="{{ event.image }}"
+              class="card-img-top"
+              alt="{{ event.title }}"
+              style="height: 200px; object-fit: cover"
+            />
+
+            <!-- Category Badge -->
+            <div class="position-absolute top-0 start-0 m-2">
+              <span
+                class="badge {% if event.category == 'Technology' %}bg-primary {% elif event.category == 'Arts' %}bg-success {% elif event.category == 'Education' %}bg-info {% elif event.category == 'Workshop' %}bg-warning text-dark {% else %}bg-secondary {% endif %}"
+              >
+                {{ event.category }}
+              </span>
+            </div>
+
+            {% if event.featured %}
+            <div class="position-absolute top-0 end-0 m-2">
+              <span class="badge bg-primary rounded-pill"
+                ><i class="fas fa-star me-1"></i>Featured</span
+              >
+            </div>
+            {% endif %}
+
+            <!-- Bookmark Button -->
+            <button
+              class="bookmark-button position-absolute bottom-0 end-0 m-2 btn btn-sm btn-light rounded-circle"
+            >
+              <i class="far fa-bookmark"></i>
+            </button>
+          </div>
+
+          <div class="card-body">
+            <h4 class="card-title">{{ event.title }}</h4>
+
+            <!-- Rating -->
+            <div class="mb-2 d-flex align-items-center">
+              <div class="me-2">
+                {% for i in range(5) %} {% if i < event.rating|int %}
+                <i class="fas fa-star text-warning"></i>
+                {% elif i < event.rating %}
+                <i class="fas fa-star-half-alt text-warning"></i>
+                {% else %}
+                <i class="far fa-star text-warning"></i>
+                {% endif %} {% endfor %}
+              </div>
+              <span class="small text-muted">({{ event.rating }})</span>
+            </div>
+
+            <!-- Event Details -->
+            <div class="mb-3">
+              <p class="card-text mb-1 text-muted">
+                <i class="far fa-calendar-alt me-2 text-primary"></i>{{
+                event.date }}
+              </p>
+              <p class="card-text mb-1 text-muted">
+                <i class="far fa-clock me-2 text-primary"></i>{{ event.time }}
+              </p>
+              <p class="card-text mb-1 text-muted">
+                <i class="fas fa-map-marker-alt me-2 text-primary"></i>{{
+                event.venue }}
+              </p>
+              <p class="card-text mb-1 text-muted">
+                <i class="fas fa-tag me-2 text-primary"></i>{% if event.price ==
+                0 %}Free{% else %}₹{{ event.price }}{% endif %}
+              </p>
+            </div>
+
+            <p class="card-text">{{ event.description }}</p>
+
+            <div class="d-flex justify-content-between mt-3">
+              <a
+                href="{{ url_for('event_details', event_id=event.id) }}"
+                class="btn btn-outline-primary"
+              >
+                <i class="fas fa-info-circle me-1"></i>Details
+              </a>
+              <a
+                href="{{ url_for('book_event', event_id=event.id) }}"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-ticket-alt me-1"></i>Book Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="#" class="btn btn-primary">View All Events</a>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="mb-3">What Our Users Say</h2>
+        <p class="lead">
+          Hear from students and organizers who use Eventsphere
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-center mb-4">
+              <img
+                src="https://randomuser.me/api/portraits/women/32.jpg"
+                alt="User"
+                class="rounded-circle"
+                width="80"
+              />
+            </div>
+            <p class="card-text text-center">
+              "Eventsphere has made it so easy to find interesting events on
+              campus. I've attended workshops and made new friends!"
+            </p>
+            <div class="text-center">
+              <h5 class="mb-1">Priya Sharma</h5>
+              <p class="small text-muted">Computer Science Student</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-center mb-4">
+              <img
+                src="https://randomuser.me/api/portraits/men/44.jpg"
+                alt="User"
+                class="rounded-circle"
+                width="80"
+              />
+            </div>
+            <p class="card-text text-center">
+              "As an event organizer, this platform has simplified the entire
+              process of creating and managing events. Highly recommended!"
+            </p>
+            <div class="text-center">
+              <h5 class="mb-1">Rahul Patel</h5>
+              <p class="small text-muted">Event Coordinator</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-center mb-4">
+              <img
+                src="https://randomuser.me/api/portraits/women/68.jpg"
+                alt="User"
+                class="rounded-circle"
+                width="80"
+              />
+            </div>
+            <p class="card-text text-center">
+              "The reminders feature is fantastic! I never miss an event I'm
+              interested in, and the filtering options make it easy to find
+              relevant events."
+            </p>
+            <div class="text-center">
+              <h5 class="mb-1">Ananya Gupta</h5>
+              <p class="small text-muted">Business Student</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8 mx-auto text-center">
+        <h2 class="mb-4">Ready to Join Eventsphere?</h2>
+        <p class="lead mb-4">
+          Create an account today and start discovering amazing events!
+        </p>
+        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg"
+          >Sign Up Now</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { MAPS_CONFIG } from "../config/environment";
 
 interface MapProps {
   events: any[];
@@ -20,7 +21,7 @@ const Map: React.FC<MapProps> = ({ events, userLocation, onMarkerClick }) => {
       }
 
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_CONFIG.API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = initializeMap;
@@ -30,8 +31,8 @@ const Map: React.FC<MapProps> = ({ events, userLocation, onMarkerClick }) => {
     const initializeMap = () => {
       if (!mapRef.current || !window.google) return;
 
-      // Default center (India)
-      const defaultCenter = { lat: 20.5937, lng: 78.9629 };
+      // Default center from configuration
+      const defaultCenter = MAPS_CONFIG.DEFAULT_CENTER;
 
       // Use user location if available
       const center = userLocation
@@ -41,7 +42,7 @@ const Map: React.FC<MapProps> = ({ events, userLocation, onMarkerClick }) => {
       // Create map instance
       mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
         center,
-        zoom: userLocation ? 10 : 5,
+        zoom: userLocation ? 10 : MAPS_CONFIG.DEFAULT_ZOOM,
         mapTypeControl: false,
         fullscreenControl: false,
         streetViewControl: false,

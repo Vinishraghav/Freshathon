@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Details - Eventsphere</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <style>
+      .event-image {
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+
+      .event-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .event-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .event-meta-item i {
+        color: var(--primary-color);
+      }
+
+      .rating-stars {
+        color: #ffc107;
+        font-size: 1.25rem;
+      }
+
+      .rating-stars .bi-star-fill,
+      .rating-stars .bi-star-half,
+      .rating-stars .bi-star {
+        cursor: pointer;
+      }
+
+      #map {
+        height: 300px;
+        width: 100%;
+        border-radius: 0.5rem;
+      }
+
+      .share-btn {
+        transition: transform 0.2s;
+      }
+
+      .share-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .event-countdown {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .countdown-item {
+        text-align: center;
+        padding: 0.5rem;
+      }
+
+      .countdown-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .countdown-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      .event-gallery img {
+        height: 150px;
+        object-fit: cover;
+        cursor: pointer;
+        border-radius: 0.5rem;
+        transition: transform 0.2s;
+      }
+
+      .event-gallery img:hover {
+        transform: scale(1.05);
+      }
+
+      @media (max-width: 768px) {
+        .event-meta {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .event-gallery img {
+          height: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <i class="bi bi-calendar-event me-2"></i>
+          Eventsphere
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i class="bi bi-house-door me-1"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="events.html">
+                <i class="bi bi-calendar-event me-1"></i> Events
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="categoriesDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-grid me-1"></i> Categories
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="events.html?category=technology"
+                    >Technology</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=business"
+                    >Business</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=arts"
+                    >Arts</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=music"
+                    >Music</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=sports"
+                    >Sports</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=food"
+                    >Food</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=health"
+                    >Health</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="events.html">All Categories</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#contactModal"
+              >
+                <i class="bi bi-chat-dots me-1"></i> Contact
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center">
+            <!-- Dark Mode Toggle -->
+            <div class="form-check form-switch me-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="darkModeToggle"
+                aria-label="Toggle dark mode"
+              />
+              <label class="form-check-label text-light" for="darkModeToggle">
+                <i class="bi bi-moon-stars"></i>
+                <span class="visually-hidden">Dark Mode</span>
+              </label>
+            </div>
+
+            <div class="dropdown">
+              <button
+                class="btn btn-outline-light dropdown-toggle"
+                type="button"
+                id="loginDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-person me-1"></i>
+                Login
+              </button>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="loginDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="student_login.html">
+                    <i class="bi bi-mortarboard me-2"></i>
+                    Student Login
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="organizer_login.html">
+                    <i class="bi bi-building me-2"></i>
+                    College/Organizer Login
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="events.html">Events</a></li>
+          <li
+            class="breadcrumb-item active"
+            id="event-title-breadcrumb"
+            aria-current="page"
+          >
+            Event Details
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Event Details -->
+      <div id="event-details-container">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading event details...</p>
+        </div>
+      </div>
+
+      <!-- Related Events -->
+      <h3 class="mt-5 mb-4">Related Events</h3>
+      <div
+        id="related-events"
+        class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+      >
+        <!-- Related events will be loaded here via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Eventsphere</h5>
+            <p>Discover events happening around you and across India.</p>
+            <p class="mb-1">
+              <i class="bi bi-envelope me-2"></i> info@eventsphere.com
+            </p>
+            <p><i class="bi bi-telephone me-2"></i> +91 9876543210</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="index.html" class="text-light">Home</a></li>
+              <li><a href="events.html" class="text-light">Events</a></li>
+              <li>
+                <a
+                  href="#"
+                  class="text-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#aboutModal"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#contactModal"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>Connect With Us</h5>
+            <div class="d-flex gap-3 fs-4">
+              <a
+                href="#"
+                class="text-light"
+                aria-label="Facebook"
+                title="Facebook"
+                ><i class="bi bi-facebook"></i
+              ></a>
+              <a
+                href="#"
+                class="text-light"
+                aria-label="Twitter"
+                title="Twitter"
+                ><i class="bi bi-twitter-x"></i
+              ></a>
+              <a
+                href="#"
+                class="text-light"
+                aria-label="Instagram"
+                title="Instagram"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a
+                href="#"
+                class="text-light"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+                ><i class="bi bi-linkedin"></i
+              ></a>
+            </div>
+            <div class="mt-3">
+              <h6>Subscribe to Newsletter</h6>
+              <div class="input-group">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Your email"
+                  aria-label="Email for newsletter"
+                />
+                <button class="btn btn-primary" type="button">Subscribe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="text-center">
+          <p class="mb-0">&copy; 2025 Eventsphere. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div
+      class="modal fade"
+      id="contactModal"
+      tabindex="-1"
+      aria-labelledby="contactModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="contactModalLabel">Contact Us</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="contactName" class="form-label">Your Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contactName"
+                  required
+                />
+                <div class="invalid-feedback">Please enter your name.</div>
+              </div>
+              <div class="mb-3">
+                <label for="contactEmail" class="form-label"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="contactEmail"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please enter a valid email address.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="contactSubject" class="form-label">Subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contactSubject"
+                  required
+                />
+                <div class="invalid-feedback">Please enter a subject.</div>
+              </div>
+              <div class="mb-3">
+                <label for="contactMessage" class="form-label">Message</label>
+                <textarea
+                  class="form-control"
+                  id="contactMessage"
+                  rows="4"
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Please enter your message.</div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Send Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Modal -->
+    <div
+      class="modal fade"
+      id="aboutModal"
+      tabindex="-1"
+      aria-labelledby="aboutModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="aboutModalLabel">About Eventsphere</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h4>Our Mission</h4>
+            <p>
+              Eventsphere is a platform dedicated to connecting students with
+              events happening around them. Our mission is to make event
+              discovery easy and accessible for everyone.
+            </p>
+
+            <h4>Who We Are</h4>
+            <p>
+              We are a team of passionate individuals who believe in the power
+              of events to bring people together, foster learning, and create
+              memorable experiences.
+            </p>
+
+            <h4>What We Offer</h4>
+            <div class="row mt-4">
+              <div class="col-md-4 text-center mb-3">
+                <i class="bi bi-geo-alt fs-1 text-primary"></i>
+                <h5>Nearby Events</h5>
+                <p>Discover events happening within 100km of your location.</p>
+              </div>
+              <div class="col-md-4 text-center mb-3">
+                <i class="bi bi-calendar-check fs-1 text-primary"></i>
+                <h5>Nationwide Coverage</h5>
+                <p>Explore events from all across India.</p>
+              </div>
+              <div class="col-md-4 text-center mb-3">
+                <i class="bi bi-building fs-1 text-primary"></i>
+                <h5>Organizer Platform</h5>
+                <p>
+                  Create and manage your events with our easy-to-use platform.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Google Maps API -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+      async
+      defer
+    ></script>
+
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+
+    <!-- Event Details JavaScript -->
+    <script src="js/event-details.js"></script>
+
+    <script>
+      // This script is intentionally left empty as we've moved all functionality to event-details.js
+      /*
+        {
+          id: "1",
+          title: "Tech Conference 2025",
+          date: "2025-04-10",
+          time: "09:00",
+          venue: "Chennai Convention Center",
+          description:
+            "Annual technology conference featuring the latest innovations in AI, machine learning, and blockchain. Join industry experts for workshops, panel discussions, and networking opportunities.\n\nThe conference will feature keynote speeches from industry leaders, hands-on workshops, and networking sessions. Topics covered will include artificial intelligence, machine learning, blockchain technology, cybersecurity, and more.\n\nThis is a great opportunity for students, professionals, and enthusiasts to learn about the latest trends in technology and connect with like-minded individuals.",
+          category: "technology",
+          image: "https://source.unsplash.com/random/800x600/?tech",
+          registrationLink: "https://example.com/register",
+          organizerName: "TechEvents India",
+          latitude: 13.0827,
+          longitude: 80.2707,
+        },
+        {
+          id: "2",
+          title: "Startup Meetup",
+          date: "2025-04-15",
+          time: "18:00",
+          venue: "Bangalore Tech Park",
+          description:
+            "Networking event for startups and investors. Pitch your ideas, meet potential investors, and connect with like-minded entrepreneurs.\n\nThe meetup will feature pitch sessions where startups can present their ideas to a panel of investors, networking opportunities, and mentorship sessions with experienced entrepreneurs.\n\nThis is a great opportunity for startups to gain visibility, receive feedback on their ideas, and potentially secure funding for their ventures.",
+          category: "business",
+          image: "https://source.unsplash.com/random/800x600/?startup",
+          registrationLink: "https://example.com/register",
+          organizerName: "Startup India",
+          latitude: 12.9716,
+          longitude: 77.5946,
+        },
+        {
+          id: "3",
+          title: "Music Festival",
+          date: "2025-05-05",
+          time: "16:00",
+          venue: "Mumbai Beach",
+          description:
+            "Annual music festival featuring top artists from around the world. Enjoy a day of music, food, and fun by the beach.\n\nThe festival will feature performances from both established and emerging artists across various genres including rock, pop, electronic, and indie. There will also be food stalls, art installations, and interactive activities.\n\nBring your friends and family for a day of music, food, and fun by the beach!",
+          category: "music",
+          image: "https://source.unsplash.com/random/800x600/?music",
+          registrationLink: "https://example.com/register",
+          organizerName: "Mumbai Music Events",
+          latitude: 19.076,
+          longitude: 72.8777,
+        },
+        {
+          id: "4",
+          title: "College Hackathon",
+          date: "2025-04-20",
+          time: "10:00",
+          venue: "Delhi Technical University",
+          description:
+            "24-hour coding competition for college students. Form teams, solve real-world problems, and win exciting prizes.\n\nThe hackathon will challenge participants to develop innovative solutions to real-world problems. Teams will have 24 hours to ideate, design, and develop their projects. Mentors will be available throughout the event to provide guidance and support.\n\nThis is a great opportunity for students to apply their skills, learn from peers, and showcase their talent to potential employers.",
+          category: "technology",
+          image: "https://source.unsplash.com/random/800x600/?coding",
+          registrationLink: "https://example.com/register",
+          organizerName: "Delhi Tech University",
+          latitude: 28.7501,
+          longitude: 77.1177,
+        },
+        {
+          id: "5",
+          title: "Art Exhibition",
+          date: "2025-05-10",
+          time: "11:00",
+          venue: "Kolkata Art Gallery",
+          description:
+            "Exhibition featuring works from emerging artists across India. Explore paintings, sculptures, and digital art in this immersive experience.\n\nThe exhibition will showcase a diverse range of artistic expressions including paintings, sculptures, installations, and digital art. Visitors will have the opportunity to meet the artists, attend workshops, and participate in guided tours.\n\nThis is a great opportunity to support emerging artists and experience the vibrant art scene of India.",
+          category: "arts",
+          image: "https://source.unsplash.com/random/800x600/?art",
+          registrationLink: "https://example.com/register",
+          organizerName: "Kolkata Arts Council",
+          latitude: 22.5726,
+          longitude: 88.3639,
+        },
+        {
+          id: "6",
+          title: "Sports Tournament",
+          date: "2025-05-15",
+          time: "08:00",
+          venue: "Hyderabad Stadium",
+          description:
+            "Inter-college sports tournament featuring cricket, football, basketball, and athletics. Cheer for your favorite teams and witness thrilling competitions.\n\nThe tournament will feature competitions in cricket, football, basketball, volleyball, and athletics. Colleges from across the country will participate in this prestigious event.\n\nCome and cheer for your favorite teams and witness thrilling competitions!",
+          category: "sports",
+          image: "https://source.unsplash.com/random/800x600/?sports",
+          registrationLink: "https://example.com/register",
+          organizerName: "Hyderabad Sports Association",
+          latitude: 17.4065,
+          longitude: 78.4772,
+        },
+      ];
+
+      // Get event ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get("id");
+
+      // Display event details
+      function displayEventDetails(event) {
+        const container = document.getElementById("event-details-container");
+
+        // Format date
+        const eventDate = new Date(event.date);
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        const formattedDate = eventDate.toLocaleDateString(undefined, options);
+
+        let html = `
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="events.html">Events</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">${
+                                  event.title
+                                }</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="badge category-badge ${event.category}">${
+          event.category.charAt(0).toUpperCase() + event.category.slice(1)
+        }</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <img src="${
+                          event.image
+                        }" class="img-fluid event-image mb-4" alt="${
+          event.title
+        }">
+
+                        <h1 class="mb-3">${event.title}</h1>
+
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                <i class="bi bi-calendar-event"></i>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <i class="bi bi-clock"></i>
+                                <span>${event.time}</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>${event.venue}</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <i class="bi bi-building"></i>
+                                <span>${event.organizerName}</span>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">About This Event</h5>
+                                <p class="card-text">${event.description.replace(
+                                  /\n/g,
+                                  "<br>"
+                                )}</p>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a href="${
+                              event.registrationLink
+                            }" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+                                <i class="bi bi-box-arrow-up-right me-2"></i>
+                                Register Now
+                            </a>
+                            <a href="events.html" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Back to Events
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Event Location</h5>
+                                <div class="ratio ratio-4x3 mb-3">
+                                    <iframe
+                                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(
+                                          event.venue
+                                        )}"
+                                        allowfullscreen
+                                        loading="lazy"
+                                        referrerpolicy="no-referrer-when-downgrade">
+                                    </iframe>
+                                </div>
+                                <p class="mb-0">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    ${event.venue}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Share This Event</h5>
+                                <div class="d-flex gap-2 mt-3">
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                      window.location.href
+                                    )}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                                        <i class="bi bi-facebook"></i>
+                                    </a>
+                                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                                      event.title
+                                    )}&url=${encodeURIComponent(
+          window.location.href
+        )}" class="btn btn-outline-info" target="_blank" rel="noopener noreferrer">
+                                        <i class="bi bi-twitter-x"></i>
+                                    </a>
+                                    <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(
+                                      event.title + " - " + window.location.href
+                                    )}" class="btn btn-outline-success" target="_blank" rel="noopener noreferrer">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </a>
+                                    <a href="mailto:?subject=${encodeURIComponent(
+                                      "Check out this event: " + event.title
+                                    )}&body=${encodeURIComponent(
+          "I thought you might be interested in this event: " +
+            event.title +
+            "\n\n" +
+            window.location.href
+        )}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-envelope"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Set Reminder</h5>
+                                <form id="reminderForm" class="needs-validation" novalidate>
+                                    <div class="mb-3">
+                                        <label for="reminderEmail" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="reminderEmail" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid email address.
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reminderTime" class="form-label">Remind Me</label>
+                                        <select class="form-select" id="reminderTime" required>
+                                            <option value="" selected disabled>Select when to remind</option>
+                                            <option value="1hour">1 hour before</option>
+                                            <option value="3hours">3 hours before</option>
+                                            <option value="1day">1 day before</option>
+                                            <option value="3days">3 days before</option>
+                                            <option value="1week">1 week before</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select when to remind you.
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-bell me-2"></i>
+                                        Set Reminder
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Organizer</h5>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-building fs-1 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">${
+                                          event.organizerName
+                                        }</h6>
+                                        <p class="text-muted mb-0">Event Organizer</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="mb-4">Similar Events</h3>
+                    <div id="similar-events" class="row row-cols-1 row-cols-md-3 g-4">
+                        <!-- Similar events will be loaded here -->
+                    </div>
+                </div>
+            `;
+
+        container.innerHTML = html;
+
+        // Set up reminder form submission
+        document
+          .getElementById("reminderForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (!this.checkValidity()) {
+              e.stopPropagation();
+              this.classList.add("was-validated");
+              return;
+            }
+
+            alert(
+              "Reminder set successfully! You will receive an email reminder before the event."
+            );
+            this.reset();
+            this.classList.remove("was-validated");
+          });
+
+        // Load similar events (same category)
+        const similarEvents = events.filter(
+          (e) => e.category === event.category && e.id !== event.id
+        );
+        const similarEventsContainer =
+          document.getElementById("similar-events");
+
+        if (similarEvents.length === 0) {
+          similarEventsContainer.innerHTML =
+            '<div class="col-12"><p class="text-muted">No similar events found.</p></div>';
+          return;
+        }
+
+        let similarHtml = "";
+
+        similarEvents.forEach((similarEvent, index) => {
+          similarHtml += `
+                    <div class="col fade-in" style="animation-delay: ${
+                      index * 0.1
+                    }s">
+                        <div class="card h-100">
+                            <img src="${
+                              similarEvent.image
+                            }" class="card-img-top" alt="${similarEvent.title}">
+                            <div class="card-body">
+                                <span class="badge category-badge ${
+                                  similarEvent.category
+                                } float-end">${
+            similarEvent.category.charAt(0).toUpperCase() +
+            similarEvent.category.slice(1)
+          }</span>
+                                <h5 class="card-title">${
+                                  similarEvent.title
+                                }</h5>
+                                <p class="card-text mb-1"><i class="bi bi-calendar-event me-2"></i>${formatDate(
+                                  similarEvent.date
+                                )} at ${similarEvent.time}</p>
+                                <p class="card-text mb-2"><i class="bi bi-geo-alt me-2"></i>${
+                                  similarEvent.venue
+                                }</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <a href="event_details.html?id=${
+                                  similarEvent.id
+                                }" class="btn btn-primary w-100">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        });
+
+        similarEventsContainer.innerHTML = similarHtml;
+      }
+
+      // Format date
+      function formatDate(dateString) {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+      }
+
+      // Load event details when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!eventId) {
+          document.getElementById("event-details-container").innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        Event ID not specified. Please go back to the <a href="events.html">events page</a> and select an event.
+                    </div>
+                `;
+          return;
+        }
+
+        const event = events.find((e) => e.id === eventId);
+
+        if (!event) {
+          document.getElementById("event-details-container").innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        Event not found. Please go back to the <a href="events.html">events page</a> and select a valid event.
+                    </div>
+                `;
+          return;
+        }
+
+        displayEventDetails(event);
+
+        // Update page title
+        document.title = `${event.title} - Eventsphere`;
+      });
+      */
+    </script>
+  </body>
+</html>

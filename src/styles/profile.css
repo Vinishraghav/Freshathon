@@ -1,0 +1,147 @@
+/* Profile Picture Component Styles */
+.profile-picture {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-picture-sm {
+  width: 40px;
+  height: 40px;
+}
+
+.profile-picture-md {
+  width: 80px;
+  height: 80px;
+}
+
+.profile-picture-lg {
+  width: 150px;
+  height: 150px;
+}
+
+.profile-picture-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-picture-initials {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #6c757d;
+}
+
+.profile-picture-sm .profile-picture-initials {
+  font-size: 1rem;
+}
+
+.profile-picture-md .profile-picture-initials {
+  font-size: 1.5rem;
+}
+
+.profile-picture.editable:hover {
+  cursor: pointer;
+}
+
+.profile-picture-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.profile-picture-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* User Profile Page Styles */
+.user-stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.user-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--bs-primary);
+}
+
+.user-stat-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Event History Styles */
+.event-history-item {
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.event-history-item:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  border-left-color: var(--bs-primary);
+}
+
+.event-history-item.past {
+  opacity: 0.7;
+}
+
+.event-thumbnail {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.event-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Notification Styles */
+.list-group-item.unread {
+  background-color: rgba(0, 123, 255, 0.05);
+  border-left: 3px solid var(--bs-primary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .profile-picture-lg {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .user-stats {
+    flex-wrap: wrap;
+  }
+  
+  .user-stat-item {
+    width: 50%;
+    margin-bottom: 1rem;
+  }
+}

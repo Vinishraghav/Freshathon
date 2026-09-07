@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discover Events - Eventsphere</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <i class="bi bi-calendar-event me-2"></i>
+          Eventsphere
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i class="bi bi-house-door me-1"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="events.html">
+                <i class="bi bi-calendar-event me-1"></i> Events
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="categoriesDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-grid me-1"></i> Categories
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="events.html?category=technology"
+                    >Technology</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=business"
+                    >Business</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=arts"
+                    >Arts</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=music"
+                    >Music</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=sports"
+                    >Sports</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=food"
+                    >Food</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="events.html?category=health"
+                    >Health</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="events.html">All Categories</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#contactModal"
+              >
+                <i class="bi bi-chat-dots me-1"></i> Contact
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center">
+            <!-- Dark Mode Toggle -->
+            <div class="form-check form-switch me-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="darkModeToggle"
+                aria-label="Toggle dark mode"
+              />
+              <label class="form-check-label text-light" for="darkModeToggle">
+                <i class="bi bi-moon-stars"></i>
+                <span class="visually-hidden">Dark Mode</span>
+              </label>
+            </div>
+
+            <div class="dropdown">
+              <button
+                class="btn btn-outline-light dropdown-toggle"
+                type="button"
+                id="loginDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-person me-1"></i>
+                Login
+              </button>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="loginDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="student_login.html">
+                    <i class="bi bi-mortarboard me-2"></i>
+                    Student Login
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="organizer_login.html">
+                    <i class="bi bi-building me-2"></i>
+                    College/Organizer Login
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+      <h1 class="mb-4">Discover Events</h1>
+
+      <!-- Search and Filter -->
+      <div class="card mb-4">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">
+            <button
+              class="btn btn-link text-decoration-none p-0 text-dark"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#filterCollapse"
+              aria-expanded="true"
+              aria-controls="filterCollapse"
+            >
+              <i class="bi bi-funnel me-2"></i> Search & Filters
+              <i class="bi bi-chevron-down ms-1"></i>
+            </button>
+          </h5>
+        </div>
+        <div class="collapse show" id="filterCollapse">
+          <div class="card-body">
+            <!-- Search -->
+            <div class="mb-3">
+              <label for="search-input" class="form-label">Search Events</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="bi bi-search"></i
+                ></span>
+                <input
+                  type="text"
+                  id="search-input"
+                  class="form-control"
+                  placeholder="Search events by title, venue, or description"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Category Filter -->
+              <div class="col-md-4 mb-3">
+                <label for="category-filter" class="form-label">Category</label>
+                <select id="category-filter" class="form-select">
+                  <option value="all">All Categories</option>
+                  <option value="technology">Technology</option>
+                  <option value="business">Business</option>
+                  <option value="arts">Arts</option>
+                  <option value="music">Music</option>
+                  <option value="sports">Sports</option>
+                  <option value="food">Food</option>
+                  <option value="health">Health</option>
+                </select>
+              </div>
+
+              <!-- Date Filter -->
+              <div class="col-md-4 mb-3">
+                <label for="date-filter" class="form-label">Date Range</label>
+                <select id="date-filter" class="form-select">
+                  <option value="all">All Dates</option>
+                  <option value="today">Today</option>
+                  <option value="tomorrow">Tomorrow</option>
+                  <option value="this-week">This Week</option>
+                  <option value="this-weekend">This Weekend</option>
+                  <option value="next-week">Next Week</option>
+                  <option value="this-month">This Month</option>
+                </select>
+              </div>
+
+              <!-- Price Filter -->
+              <div class="col-md-4 mb-3">
+                <label for="price-range" class="form-label">Price Range</label>
+                <div class="d-flex align-items-center">
+                  <span class="me-2">₹0</span>
+                  <input
+                    type="range"
+                    class="form-range"
+                    id="price-range"
+                    min="0"
+                    max="5000"
+                    step="500"
+                    value="5000"
+                  />
+                  <span class="ms-2" id="price-display">₹5000+</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advanced Filters Toggle -->
+            <div class="mt-2">
+              <a
+                class="text-decoration-none"
+                data-bs-toggle="collapse"
+                href="#advancedFilters"
+                role="button"
+                aria-expanded="false"
+                aria-controls="advancedFilters"
+              >
+                <i class="bi bi-sliders me-1"></i> Advanced Filters
+              </a>
+
+              <div class="collapse mt-3" id="advancedFilters">
+                <div class="row">
+                  <!-- Location Filter -->
+                  <div class="col-md-6 mb-3">
+                    <label for="location-filter" class="form-label"
+                      >Location</label
+                    >
+                    <select id="location-filter" class="form-select">
+                      <option value="all">All Locations</option>
+                      <option value="delhi">Delhi</option>
+                      <option value="mumbai">Mumbai</option>
+                      <option value="bangalore">Bangalore</option>
+                      <option value="chennai">Chennai</option>
+                      <option value="hyderabad">Hyderabad</option>
+                      <option value="kolkata">Kolkata</option>
+                    </select>
+                  </div>
+
+                  <!-- Sort By -->
+                  <div class="col-md-6 mb-3">
+                    <label for="sort-by" class="form-label">Sort By</label>
+                    <select id="sort-by" class="form-select">
+                      <option value="date-asc">Date (Earliest First)</option>
+                      <option value="date-desc">Date (Latest First)</option>
+                      <option value="name-asc">Name (A-Z)</option>
+                      <option value="name-desc">Name (Z-A)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="d-flex justify-content-end mt-3">
+              <button
+                type="button"
+                class="btn btn-outline-secondary me-2"
+                id="reset-filters"
+              >
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+              </button>
+              <button type="button" class="btn btn-primary" id="apply-filters">
+                <i class="bi bi-funnel-fill me-1"></i> Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs mb-4" id="eventTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="all-events-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#all-events-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="all-events-tab-pane"
+            aria-selected="true"
+          >
+            <i class="bi bi-globe me-2"></i>All Events
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="nearby-events-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#nearby-events-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="nearby-events-tab-pane"
+            aria-selected="false"
+          >
+            <i class="bi bi-geo-alt me-2"></i>Nearby Events
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="eventTabsContent">
+        <!-- All Events Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="all-events-tab-pane"
+          role="tabpanel"
+          aria-labelledby="all-events-tab"
+          tabindex="0"
+        >
+          <div
+            id="all-events"
+            class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+          >
+            <!-- Event cards will be loaded here via JavaScript -->
+          </div>
+        </div>
+
+        <!-- Nearby Events Tab -->
+        <div
+          class="tab-pane fade"
+          id="nearby-events-tab-pane"
+          role="tabpanel"
+          aria-labelledby="nearby-events-tab"
+          tabindex="0"
+        >
+          <div id="nearby-events">
+            <div class="text-center py-5">
+              <p class="mb-3">
+                <i class="bi bi-geo-alt fs-1 text-primary"></i>
+              </p>
+              <h4>Finding Events Near You</h4>
+              <p class="text-muted">
+                Please allow location access when prompted
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>Eventsphere</h5>
+            <p>Discover events happening around you and across India.</p>
+            <p class="mb-1">
+              <i class="bi bi-envelope me-2"></i> info@eventsphere.com
+            </p>
+            <p><i class="bi bi-telephone me-2"></i> +91 9876543210</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="index.html" class="text-light">Home</a></li>
+              <li><a href="events.html" class="text-light">Events</a></li>
+              <li>
+                <a
+                  href="#"
+                  class="text-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#aboutModal"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#contactModal"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>Connect With Us</h5>
+            <div class="d-flex gap-3 fs-4">
+              <a
+                href="#"
+                class="text-light"
+                aria-label="Facebook"
+                title="Facebook"
+                ><i class="bi bi-facebook"></i
+              ></a>
+              <a
+                href="#"
+                class="text-light"
+                aria-label="Twitter"
+                title="Twitter"
+                ><i class="bi bi-twitter-x"></i
+              ></a>
+              <a
+                href="#"
+                class="text-light"
+                aria-label="Instagram"
+                title="Instagram"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a
+                href="#"
+                class="text-light"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+                ><i class="bi bi-linkedin"></i
+              ></a>
+            </div>
+            <div class="mt-3">
+              <h6>Subscribe to Newsletter</h6>
+              <div class="input-group">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Your email"
+                  aria-label="Email for newsletter"
+                />
+                <button class="btn btn-primary" type="button">Subscribe</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="text-center">
+          <p class="mb-0">&copy; 2025 Eventsphere. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div
+      class="modal fade"
+      id="contactModal"
+      tabindex="-1"
+      aria-labelledby="contactModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="contactModalLabel">Contact Us</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="contactName" class="form-label">Your Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contactName"
+                  required
+                />
+                <div class="invalid-feedback">Please enter your name.</div>
+              </div>
+              <div class="mb-3">
+                <label for="contactEmail" class="form-label"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="contactEmail"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please enter a valid email address.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="contactSubject" class="form-label">Subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contactSubject"
+                  required
+                />
+                <div class="invalid-feedback">Please enter a subject.</div>
+              </div>
+              <div class="mb-3">
+                <label for="contactMessage" class="form-label">Message</label>
+                <textarea
+                  class="form-control"
+                  id="contactMessage"
+                  rows="4"
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Please enter your message.</div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Send Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Modal -->
+    <div
+      class="modal fade"
+      id="aboutModal"
+      tabindex="-1"
+      aria-labelledby="aboutModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="aboutModalLabel">About Eventsphere</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h4>Our Mission</h4>
+            <p>
+              Eventsphere is a platform dedicated to connecting students with
+              events happening around them. Our mission is to make event
+              discovery easy and accessible for everyone.
+            </p>
+
+            <h4>Who We Are</h4>
+            <p>
+              We are a team of passionate individuals who believe in the power
+              of events to bring people together, foster learning, and create
+              memorable experiences.
+            </p>
+
+            <h4>What We Offer</h4>
+            <div class="row mt-4">
+              <div class="col-md-4 text-center mb-3">
+                <i class="bi bi-geo-alt fs-1 text-primary"></i>
+                <h5>Nearby Events</h5>
+                <p>Discover events happening within 100km of your location.</p>
+              </div>
+              <div class="col-md-4 text-center mb-3">
+                <i class="bi bi-calendar-check fs-1 text-primary"></i>
+                <h5>Nationwide Coverage</h5>
+                <p>Explore events from all across India.</p>
+              </div>
+              <div class="col-md-4 text-center mb-3">
+                <i class="bi bi-building fs-1 text-primary"></i>
+                <h5>Organizer Platform</h5>
+                <p>
+                  Create and manage your events with our easy-to-use platform.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="js/main.js"></script>
+
+    <script>
+      // Sample events data
+      const events = [
+        {
+          id: "1",
+          title: "Tech Conference 2025",
+          date: "2025-04-10",
+          time: "09:00",
+          venue: "Chennai Convention Center",
+          description:
+            "Annual technology conference featuring the latest innovations in AI, machine learning, and blockchain. Join industry experts for workshops, panel discussions, and networking opportunities.",
+          category: "technology",
+          image: "https://source.unsplash.com/random/800x600/?tech",
+          registrationLink: "#",
+          organizerName: "TechEvents India",
+          latitude: 13.0827,
+          longitude: 80.2707,
+        },
+        {
+          id: "2",
+          title: "Startup Meetup",
+          date: "2025-04-15",
+          time: "18:00",
+          venue: "Bangalore Tech Park",
+          description:
+            "Networking event for startups and investors. Pitch your ideas, meet potential investors, and connect with like-minded entrepreneurs.",
+          category: "business",
+          image: "https://source.unsplash.com/random/800x600/?startup",
+          registrationLink: "#",
+          organizerName: "Startup India",
+          latitude: 12.9716,
+          longitude: 77.5946,
+        },
+        {
+          id: "3",
+          title: "Music Festival",
+          date: "2025-05-05",
+          time: "16:00",
+          venue: "Mumbai Beach",
+          description:
+            "Annual music festival featuring top artists from around the world. Enjoy a day of music, food, and fun by the beach.",
+          category: "music",
+          image: "https://source.unsplash.com/random/800x600/?music",
+          registrationLink: "#",
+          organizerName: "Mumbai Music Events",
+          latitude: 19.076,
+          longitude: 72.8777,
+        },
+        {
+          id: "4",
+          title: "College Hackathon",
+          date: "2025-04-20",
+          time: "10:00",
+          venue: "Delhi Technical University",
+          description:
+            "24-hour coding competition for college students. Form teams, solve real-world problems, and win exciting prizes.",
+          category: "technology",
+          image: "https://source.unsplash.com/random/800x600/?coding",
+          registrationLink: "#",
+          organizerName: "Delhi Tech University",
+          latitude: 28.7501,
+          longitude: 77.1177,
+        },
+        {
+          id: "5",
+          title: "Art Exhibition",
+          date: "2025-05-10",
+          time: "11:00",
+          venue: "Kolkata Art Gallery",
+          description:
+            "Exhibition featuring works from emerging artists across India. Explore paintings, sculptures, and digital art in this immersive experience.",
+          category: "arts",
+          image: "https://source.unsplash.com/random/800x600/?art",
+          registrationLink: "#",
+          organizerName: "Kolkata Arts Council",
+          latitude: 22.5726,
+          longitude: 88.3639,
+        },
+        {
+          id: "6",
+          title: "Sports Tournament",
+          date: "2025-05-15",
+          time: "08:00",
+          venue: "Hyderabad Stadium",
+          description:
+            "Inter-college sports tournament featuring cricket, football, basketball, and athletics. Cheer for your favorite teams and witness thrilling competitions.",
+          category: "sports",
+          image: "https://source.unsplash.com/random/800x600/?sports",
+          registrationLink: "#",
+          organizerName: "Hyderabad Sports Association",
+          latitude: 17.4065,
+          longitude: 78.4772,
+        },
+      ];
+
+      // Display events
+      function displayEvents(eventsArray, containerId) {
+        const container = document.getElementById(containerId);
+        let html = "";
+
+        eventsArray.forEach((event, index) => {
+          html += `
+                    <div class="col fade-in" style="animation-delay: ${
+                      index * 0.1
+                    }s">
+                        <div class="card h-100">
+                            <img src="${
+                              event.image
+                            }" class="card-img-top" alt="${event.title}">
+                            <div class="card-body">
+                                <span class="badge category-badge ${
+                                  event.category
+                                } float-end">${
+            event.category.charAt(0).toUpperCase() + event.category.slice(1)
+          }</span>
+                                <h5 class="card-title">${event.title}</h5>
+                                <p class="card-text mb-1"><i class="bi bi-calendar-event me-2"></i>${formatDate(
+                                  event.date
+                                )} at ${event.time}</p>
+                                <p class="card-text mb-2"><i class="bi bi-geo-alt me-2"></i>${
+                                  event.venue
+                                }</p>
+                                <p class="card-text">${truncateText(
+                                  event.description,
+                                  100
+                                )}</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <a href="event_details.html?id=${
+                                  event.id
+                                }" class="btn btn-primary w-100">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      // Format date
+      function formatDate(dateString) {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+      }
+
+      // Truncate text
+      function truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + "...";
+      }
+
+      // Initialize price range display
+      const priceRange = document.getElementById("price-range");
+      const priceDisplay = document.getElementById("price-display");
+
+      if (priceRange && priceDisplay) {
+        priceRange.addEventListener("input", function () {
+          const value = this.value;
+          priceDisplay.textContent = value >= 5000 ? "₹5000+" : `₹${value}`;
+        });
+      }
+
+      // Apply filters button
+      const applyFiltersBtn = document.getElementById("apply-filters");
+      if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener("click", function () {
+          applyAllFilters();
+        });
+      }
+
+      // Reset filters button
+      const resetFiltersBtn = document.getElementById("reset-filters");
+      if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener("click", function () {
+          // Reset search input
+          const searchInput = document.getElementById("search-input");
+          if (searchInput) searchInput.value = "";
+
+          // Reset category filter
+          const categoryFilter = document.getElementById("category-filter");
+          if (categoryFilter) categoryFilter.value = "all";
+
+          // Reset date filter
+          const dateFilter = document.getElementById("date-filter");
+          if (dateFilter) dateFilter.value = "all";
+
+          // Reset price range
+          if (priceRange) {
+            priceRange.value = 5000;
+            priceDisplay.textContent = "₹5000+";
+          }
+
+          // Reset location filter
+          const locationFilter = document.getElementById("location-filter");
+          if (locationFilter) locationFilter.value = "all";
+
+          // Reset sort by
+          const sortBy = document.getElementById("sort-by");
+          if (sortBy) sortBy.value = "date-asc";
+
+          // Display all events
+          displayEvents(events, "all-events");
+        });
+      }
+
+      // Apply all filters function
+      function applyAllFilters() {
+        // Get filter values
+        const searchTerm = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const category = document.getElementById("category-filter").value;
+        const dateRange = document.getElementById("date-filter").value;
+        const maxPrice = parseInt(document.getElementById("price-range").value);
+        const location = document.getElementById("location-filter").value;
+        const sortOption = document.getElementById("sort-by").value;
+
+        // Apply filters
+        let filteredEvents = events;
+
+        // Search filter
+        if (searchTerm) {
+          filteredEvents = filteredEvents.filter((event) => {
+            return (
+              event.title.toLowerCase().includes(searchTerm) ||
+              event.venue.toLowerCase().includes(searchTerm) ||
+              event.description.toLowerCase().includes(searchTerm)
+            );
+          });
+        }
+
+        // Category filter
+        if (category !== "all") {
+          filteredEvents = filteredEvents.filter(
+            (event) => event.category === category
+          );
+        }
+
+        // Date filter
+        if (dateRange !== "all") {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+
+          const nextWeek = new Date(today);
+          nextWeek.setDate(nextWeek.getDate() + 7);
+
+          const thisMonth = new Date(today);
+          thisMonth.setMonth(thisMonth.getMonth() + 1);
+
+          switch (dateRange) {
+            case "today":
+              filteredEvents = filteredEvents.filter((event) => {
+                const eventDate = new Date(event.date);
+                return eventDate.toDateString() === today.toDateString();
+              });
+              break;
+            case "tomorrow":
+              filteredEvents = filteredEvents.filter((event) => {
+                const eventDate = new Date(event.date);
+                return eventDate.toDateString() === tomorrow.toDateString();
+              });
+              break;
+            case "this-week":
+              filteredEvents = filteredEvents.filter((event) => {
+                const eventDate = new Date(event.date);
+                return eventDate >= today && eventDate < nextWeek;
+              });
+              break;
+            case "this-weekend":
+              filteredEvents = filteredEvents.filter((event) => {
+                const eventDate = new Date(event.date);
+                const day = eventDate.getDay();
+                return eventDate >= today && (day === 0 || day === 6); // 0 is Sunday, 6 is Saturday
+              });
+              break;
+            case "next-week":
+              const weekAfterNext = new Date(nextWeek);
+              weekAfterNext.setDate(weekAfterNext.getDate() + 7);
+              filteredEvents = filteredEvents.filter((event) => {
+                const eventDate = new Date(event.date);
+                return eventDate >= nextWeek && eventDate < weekAfterNext;
+              });
+              break;
+            case "this-month":
+              filteredEvents = filteredEvents.filter((event) => {
+                const eventDate = new Date(event.date);
+                return eventDate >= today && eventDate < thisMonth;
+              });
+              break;
+          }
+        }
+
+        // Price filter
+        if (maxPrice < 5000) {
+          filteredEvents = filteredEvents.filter((event) => {
+            // Assuming event has a price property, or derive from ticket types
+            // For demo purposes, we'll use a random price if not available
+            const eventPrice = event.price || Math.floor(Math.random() * 5000);
+            return eventPrice <= maxPrice;
+          });
+        }
+
+        // Location filter
+        if (location !== "all") {
+          filteredEvents = filteredEvents.filter((event) => {
+            // Check if venue contains the location name
+            return event.venue.toLowerCase().includes(location.toLowerCase());
+          });
+        }
+
+        // Sort events
+        switch (sortOption) {
+          case "date-asc":
+            filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            break;
+          case "date-desc":
+            filteredEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+            break;
+          case "name-asc":
+            filteredEvents.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+          case "name-desc":
+            filteredEvents.sort((a, b) => b.title.localeCompare(a.title));
+            break;
+        }
+
+        // Display filtered events
+        displayEvents(filteredEvents, "all-events");
+      }
+
+      // Individual filter event listeners for immediate feedback
+      document
+        .getElementById("search-input")
+        .addEventListener("input", function () {
+          applyAllFilters();
+        });
+
+      document
+        .getElementById("category-filter")
+        .addEventListener("change", function () {
+          applyAllFilters();
+        });
+
+      document
+        .getElementById("date-filter")
+        .addEventListener("change", function () {
+          applyAllFilters();
+        });
+
+      document
+        .getElementById("price-range")
+        .addEventListener("change", function () {
+          applyAllFilters();
+        });
+
+      document
+        .getElementById("location-filter")
+        .addEventListener("change", function () {
+          applyAllFilters();
+        });
+
+      document
+        .getElementById("sort-by")
+        .addEventListener("change", function () {
+          applyAllFilters();
+        });
+
+      // Get user's location for nearby events
+      document
+        .getElementById("nearby-events-tab")
+        .addEventListener("click", function () {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+
+                // Filter events within 100km
+                const nearbyEvents = events.filter((event) => {
+                  const distance = calculateDistance(
+                    userLat,
+                    userLon,
+                    event.latitude,
+                    event.longitude
+                  );
+                  event.distance = distance.toFixed(1);
+                  return distance <= 100;
+                });
+
+                // Sort by distance
+                nearbyEvents.sort(
+                  (a, b) => parseFloat(a.distance) - parseFloat(b.distance)
+                );
+
+                // Display nearby events
+                const container = document.getElementById("nearby-events");
+
+                if (nearbyEvents.length === 0) {
+                  container.innerHTML = `
+                                <div class="alert alert-info" role="alert">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    No events found within 100km of your location.
+                                </div>
+                            `;
+                  return;
+                }
+
+                let html =
+                  '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">';
+
+                nearbyEvents.forEach((event, index) => {
+                  html += `
+                                <div class="col fade-in" style="animation-delay: ${
+                                  index * 0.1
+                                }s">
+                                    <div class="card h-100">
+                                        <img src="${
+                                          event.image
+                                        }" class="card-img-top" alt="${
+                    event.title
+                  }">
+                                        <div class="card-body">
+                                            <span class="badge category-badge ${
+                                              event.category
+                                            } float-end">${
+                    event.category.charAt(0).toUpperCase() +
+                    event.category.slice(1)
+                  }</span>
+                                            <h5 class="card-title">${
+                                              event.title
+                                            }</h5>
+                                            <p class="card-text mb-1"><i class="bi bi-calendar-event me-2"></i>${formatDate(
+                                              event.date
+                                            )} at ${event.time}</p>
+                                            <p class="card-text mb-2"><i class="bi bi-geo-alt me-2"></i>${
+                                              event.venue
+                                            }</p>
+                                            <p class="card-text mb-2"><i class="bi bi-pin-map me-2"></i>${
+                                              event.distance
+                                            } km away</p>
+                                            <p class="card-text">${truncateText(
+                                              event.description,
+                                              80
+                                            )}</p>
+                                        </div>
+                                        <div class="card-footer bg-transparent border-top-0">
+                                            <a href="event_details.html?id=${
+                                              event.id
+                                            }" class="btn btn-primary w-100">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                });
+
+                html += "</div>";
+                container.innerHTML = html;
+              },
+              (error) => {
+                document.getElementById("nearby-events").innerHTML = `
+                            <div class="alert alert-warning" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                Could not access your location. Please allow location access to see nearby events.
+                            </div>
+                        `;
+              }
+            );
+          } else {
+            document.getElementById("nearby-events").innerHTML = `
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Geolocation is not supported by your browser. Please use a modern browser to see nearby events.
+                    </div>
+                `;
+          }
+        });
+
+      // Calculate distance between two coordinates in kilometers (Haversine formula)
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the Earth in km
+        const dLat = ((lat2 - lat1) * Math.PI) / 180;
+        const dLon = ((lon2 - lon1) * Math.PI) / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return distance;
+      }
+
+      // Load events when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        displayEvents(events, "all-events");
+      });
+    </script>
+  </body>
+</html>

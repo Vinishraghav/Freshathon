@@ -1,0 +1,254 @@
+/**
+ * Theme Components Styles
+ * 
+ * This file contains styles for theme-related components like
+ * theme toggle, theme settings, and theme previews.
+ */
+
+/* Theme Toggle Animation */
+.theme-toggle-animated {
+  transition: transform 0.5s ease;
+}
+
+.theme-toggle-animated:hover {
+  transform: rotate(30deg);
+}
+
+/* Floating Theme Toggle */
+.floating-theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.floating-theme-toggle:hover {
+  transform: scale(1.1) rotate(30deg);
+}
+
+body.dark-mode .floating-theme-toggle {
+  background-color: var(--primary-light);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Theme Settings */
+.theme-settings .card-header {
+  padding: 0.75rem 1rem;
+}
+
+.theme-settings .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.theme-settings .form-check {
+  margin-bottom: 0.75rem;
+}
+
+.theme-settings .form-check-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Theme Preview Cards */
+.theme-preview {
+  margin-top: 1.5rem;
+}
+
+.theme-preview-card {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 150px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.theme-preview-card.active {
+  border-color: var(--primary-color);
+  transform: translateY(-5px);
+}
+
+.theme-preview-card:hover {
+  transform: translateY(-5px);
+}
+
+.theme-preview-card.light-mode {
+  background-color: #f8f9fa;
+}
+
+.theme-preview-card.dark-mode {
+  background-color: #121212;
+}
+
+.preview-header {
+  height: 30px;
+  background-color: #e9ecef;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.theme-preview-card.dark-mode .preview-header {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+.preview-content {
+  padding: 10px;
+}
+
+.preview-text {
+  height: 10px;
+  background-color: #dee2e6;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  width: 80%;
+}
+
+.theme-preview-card.dark-mode .preview-text {
+  background-color: #444;
+}
+
+.preview-text:last-of-type {
+  width: 60%;
+}
+
+.preview-button {
+  height: 20px;
+  width: 60px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  margin-top: 20px;
+}
+
+/* Theme Mode Selector */
+.theme-mode-selector {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  border-radius: 50px;
+  padding: 5px;
+  margin-bottom: 1rem;
+}
+
+body.dark-mode .theme-mode-selector {
+  background-color: #2a2a2a;
+}
+
+.theme-mode-option {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-mode-option.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.theme-mode-option:not(.active):hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .theme-mode-option:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+
+body.dark-mode .theme-toggle-btn {
+  background-color: #333;
+}
+
+.theme-toggle-slider {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffc107;
+  font-size: 14px;
+}
+
+.theme-toggle-btn[data-theme="dark"] .theme-toggle-slider {
+  transform: translateX(30px);
+  background-color: #121212;
+  color: #adb5bd;
+}
+
+/* Theme Dropdown */
+.theme-dropdown .dropdown-menu {
+  min-width: 200px;
+  padding: 0.5rem 0;
+}
+
+.theme-dropdown .dropdown-item {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.theme-dropdown .dropdown-item i {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.theme-dropdown .dropdown-item:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+body.dark-mode .theme-dropdown .dropdown-item:hover {
+  background-color: rgba(94, 123, 255, 0.2);
+}
+
+/* Theme Indicator */
+.theme-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  color: #212529;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-right: 0.5rem;
+}
+
+body.dark-mode .theme-indicator {
+  background-color: #212529;
+  color: #f8f9fa;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}

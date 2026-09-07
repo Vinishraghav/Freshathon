@@ -1,0 +1,397 @@
+{% extends "layout.html" %}
+{% block title %}My Profile - Eventsphere{% endblock %}
+
+{% block extra_css %}
+<style>
+  .profile-header {
+    background-color: var(--primary-color);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  .profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  .profile-stat {
+    padding: 0 1rem;
+  }
+  
+  .profile-stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: block;
+  }
+  
+  .profile-stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  
+  .nav-pills .nav-link.active {
+    background-color: var(--primary-color);
+  }
+  
+  .nav-pills .nav-link {
+    color: var(--dark-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    margin-right: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-pills .nav-link i {
+    margin-right: 0.5rem;
+  }
+  
+  .tab-pane {
+    padding: 1.5rem 0;
+  }
+  
+  .event-item {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .event-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .event-item img {
+    height: 160px;
+    object-fit: cover;
+  }
+  
+  .badge-upcoming {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .badge-past {
+    background-color: var(--gray-light);
+    color: var(--dark-color);
+  }
+  
+  .upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  .upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<div class="profile-header">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-4 text-center text-md-start">
+        <div class="position-relative d-inline-block">
+          <img src="https://ui-avatars.com/api/?name={{ session['user']['email'] }}&background=4361ee&color=fff&size=150" alt="Profile" class="profile-avatar">
+          <div class="upload-btn-wrapper position-absolute bottom-0 end-0">
+            <button class="btn btn-sm btn-light rounded-circle" title="Change profile picture">
+              <i class="fas fa-camera"></i>
+            </button>
+            <input type="file" name="profile_picture" accept="image/*">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8 text-center text-md-start mt-4 mt-md-0">
+        <h1 class="mb-1">{{ session['user']['email'] }}</h1>
+        <p class="mb-3">Student at University of Technology</p>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-light btn-sm">
+            <i class="fas fa-pencil-alt me-1"></i>Edit Profile
+          </button>
+          <button class="btn btn-outline-light btn-sm">
+            <i class="fas fa-cog me-1"></i>Settings
+          </button>
+          <button class="btn btn-outline-light btn-sm">
+            <i class="fas fa-share-alt me-1"></i>Share Profile
+          </button>
+        </div>
+        
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="profile-stat-value">12</span>
+            <span class="profile-stat-label">Events Attended</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-value">5</span>
+            <span class="profile-stat-label">Upcoming Events</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-value">8</span>
+            <span class="profile-stat-label">Bookmarks</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-value">4.8</span>
+            <span class="profile-stat-label">Rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- Profile Navigation -->
+  <ul class="nav nav-pills mb-4" id="profileTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+        <i class="fas fa-calendar-alt"></i>Upcoming Events
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">
+        <i class="fas fa-history"></i>Past Events
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="bookmarks-tab" data-bs-toggle="tab" data-bs-target="#bookmarks" type="button" role="tab" aria-controls="bookmarks" aria-selected="false">
+        <i class="fas fa-bookmark"></i>Bookmarks
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">
+        <i class="fas fa-user-cog"></i>Account Settings
+      </button>
+    </li>
+  </ul>
+  
+  <!-- Tab Content -->
+  <div class="tab-content" id="profileTabContent">
+    <!-- Upcoming Events Tab -->
+    <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+      <h3 class="mb-4">Upcoming Events</h3>
+      
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card event-item">
+            <img src="https://source.unsplash.com/random/300x200/?tech" class="card-img-top" alt="Event">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-primary">Technology</span>
+                <span class="badge badge-upcoming">Jun 15, 2025</span>
+              </div>
+              <h5 class="card-title">Tech Innovation Summit</h5>
+              <p class="card-text small text-muted">
+                <i class="fas fa-map-marker-alt me-1"></i>Tech Hub, Bangalore
+              </p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="text-primary fw-bold">₹1,500</span>
+                <a href="{{ url_for('event_details', event_id=1) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card event-item">
+            <img src="https://source.unsplash.com/random/300x200/?music" class="card-img-top" alt="Event">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-success">Arts</span>
+                <span class="badge badge-upcoming">Jun 20, 2025</span>
+              </div>
+              <h5 class="card-title">Campus Music Festival</h5>
+              <p class="card-text small text-muted">
+                <i class="fas fa-map-marker-alt me-1"></i>Central Auditorium, Delhi
+              </p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="text-primary fw-bold">₹500</span>
+                <a href="{{ url_for('event_details', event_id=2) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Past Events Tab -->
+    <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+      <h3 class="mb-4">Past Events</h3>
+      
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card event-item">
+            <img src="https://source.unsplash.com/random/300x200/?conference" class="card-img-top" alt="Event">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-info">Education</span>
+                <span class="badge badge-past">May 10, 2025</span>
+              </div>
+              <h5 class="card-title">Career Development Workshop</h5>
+              <p class="card-text small text-muted">
+                <i class="fas fa-map-marker-alt me-1"></i>Career Center, Chennai
+              </p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="far fa-star text-warning"></i>
+                  <span class="ms-1 small text-muted">Your rating</span>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary">Review</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bookmarks Tab -->
+    <div class="tab-pane fade" id="bookmarks" role="tabpanel" aria-labelledby="bookmarks-tab">
+      <h3 class="mb-4">Bookmarked Events</h3>
+      
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card event-item">
+            <img src="https://source.unsplash.com/random/300x200/?workshop" class="card-img-top" alt="Event">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-warning text-dark">Workshop</span>
+                <button class="btn btn-sm btn-link text-danger p-0">
+                  <i class="fas fa-bookmark"></i>
+                </button>
+              </div>
+              <h5 class="card-title">Design Thinking Workshop</h5>
+              <p class="card-text small text-muted">
+                <i class="fas fa-calendar-alt me-1"></i>Jun 25, 2025
+                <i class="fas fa-map-marker-alt ms-2 me-1"></i>Innovation Center, Mumbai
+              </p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="text-success fw-bold">Free</span>
+                <a href="{{ url_for('event_details', event_id=3) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Account Settings Tab -->
+    <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
+      <h3 class="mb-4">Account Settings</h3>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Personal Information</h5>
+          
+          <form>
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="fullName" value="John Doe">
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" value="{{ session['user']['email'] }}" readonly>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" value="+91 98765 43210">
+              </div>
+              <div class="col-md-6">
+                <label for="dob" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" value="1998-05-15">
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea class="form-control" id="bio" rows="3">Computer Science student passionate about technology and innovation.</textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Change Password</h5>
+          
+          <form>
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword">
+            </div>
+            
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword">
+            </div>
+            
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Notification Preferences</h5>
+          
+          <form>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="emailNotifications" checked>
+              <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+              <div class="form-text">Receive emails about event updates, reminders, and recommendations</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="smsNotifications">
+              <label class="form-check-label" for="smsNotifications">SMS Notifications</label>
+              <div class="form-text">Receive text messages for important updates and reminders</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="marketingEmails" checked>
+              <label class="form-check-label" for="marketingEmails">Marketing Emails</label>
+              <div class="form-text">Receive promotional emails about new features and special offers</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Save Preferences</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

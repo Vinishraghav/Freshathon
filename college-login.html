@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Login - Eventsphere</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dark-mode.css">
+    <style>
+        .login-container {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .login-card {
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--info-color) 100%);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .login-body {
+            padding: 2rem;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        
+        .social-login button {
+            flex: 1;
+            margin: 0 0.5rem;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+        
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background-color: var(--gray-300);
+        }
+        
+        .divider-text {
+            padding: 0 1rem;
+            color: var(--gray-600);
+        }
+        
+        .benefits-list {
+            margin-top: 2rem;
+        }
+        
+        .benefits-list .icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success-color);
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-calendar-event me-2"></i>
+                Eventsphere
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <!-- Dark Mode Toggle -->
+                    <div class="form-check form-switch me-3">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                        <label class="form-check-label" for="darkModeToggle">
+                            <i class="bi bi-moon-stars"></i>
+                        </label>
+                    </div>
+                    <!-- Login/Register Buttons -->
+                    <a href="student-login.html" class="btn btn-outline-light me-2">Student Login</a>
+                    <a href="college-login.html" class="btn btn-light active">Organizer Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h2 class="mb-4">Why Host with Eventsphere?</h2>
+                            
+                            <div class="benefits-list">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="icon">
+                                        <i class="bi bi-graph-up"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">Reach More Students</h5>
+                                        <p class="mb-0 text-muted">Connect with thousands of students across India interested in your events.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="icon">
+                                        <i class="bi bi-tools"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">Powerful Tools</h5>
+                                        <p class="mb-0 text-muted">Manage registrations, send notifications, and track attendance with ease.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="icon">
+                                        <i class="bi bi-bar-chart"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">Detailed Analytics</h5>
+                                        <p class="mb-0 text-muted">Get insights into attendee demographics, engagement, and feedback.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center">
+                                    <div class="icon">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">Verified Institution Status</h5>
+                                        <p class="mb-0 text-muted">Build trust with a verified badge for your college or organization.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <a href="#" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#learnMoreModal">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card login-card">
+                        <div class="login-header">
+                            <i class="bi bi-building display-4 mb-3"></i>
+                            <h2>Organizer Login</h2>
+                            <p class="mb-0">Access your dashboard to manage events</p>
+                        </div>
+                        <div class="login-body">
+                            <form id="login-form">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                                        <button class="btn btn-outline-secondary" type="button" id="toggle-password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="remember-me">
+                                        <label class="form-check-label" for="remember-me">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-decoration-none">Forgot password?</a>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">Login</button>
+                                </div>
+                            </form>
+                            
+                            <div class="text-center mt-4">
+                                <p class="mb-0">Don't have an account? <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#registerModal">Register your institution</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="registerModalLabel">Register Your Institution</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="register-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="institution-name" class="form-label">Institution Name</label>
+                                    <input type="text" class="form-control" id="institution-name" placeholder="Enter your institution name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="institution-type" class="form-label">Institution Type</label>
+                                    <select class="form-select" id="institution-type" required>
+                                        <option value="" selected disabled>Select institution type</option>
+                                        <option value="college">College/University</option>
+                                        <option value="school">School</option>
+                                        <option value="training">Training Institute</option>
+                                        <option value="ngo">NGO</option>
+                                        <option value="corporate">Corporate</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="admin-name" class="form-label">Admin Name</label>
+                                    <input type="text" class="form-control" id="admin-name" placeholder="Enter admin's full name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="admin-position" class="form-label">Position/Designation</label>
+                                    <input type="text" class="form-control" id="admin-position" placeholder="Enter your position" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="admin-email" class="form-label">Official Email</label>
+                                    <input type="email" class="form-control" id="admin-email" placeholder="Enter official email" required>
+                                    <small class="text-muted">Preferably an institutional email</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="admin-phone" class="form-label">Contact Number</label>
+                                    <input type="tel" class="form-control" id="admin-phone" placeholder="Enter contact number" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="admin-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="admin-password" placeholder="Create a password" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="admin-confirm-password" class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" id="admin-confirm-password" placeholder="Confirm your password" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="institution-website" class="form-label">Institution Website</label>
+                            <input type="url" class="form-control" id="institution-website" placeholder="Enter institution website URL">
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms-check" required>
+                            <label class="form-check-label" for="terms-check">I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a></label>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Your application will be reviewed for verification. This usually takes 1-2 business days.
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learn More Modal -->
+    <div class="modal fade" id="learnMoreModal" tabindex="-1" aria-labelledby="learnMoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="learnMoreModalLabel">Eventsphere for Institutions</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="https://source.unsplash.com/random/600x400/?university" alt="University event" class="img-fluid rounded mb-3">
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Comprehensive Event Management</h4>
+                            <p>Eventsphere provides institutions with powerful tools to create, promote, and manage events of all sizes - from small workshops to large conferences.</p>
+                            
+                            <h5 class="mt-4">Key Features</h5>
+                            <ul>
+                                <li>Custom registration forms</li>
+                                <li>Attendee management</li>
+                                <li>Email notifications</li>
+                                <li>QR code check-in</li>
+                                <li>Feedback collection</li>
+                                <li>Analytics dashboard</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h4 class="text-center mb-4">Pricing Plans</h4>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Basic</h5>
+                                    <h2 class="my-3">Free</h2>
+                                    <ul class="list-unstyled">
+                                        <li>Up to 3 events/month</li>
+                                        <li>100 registrations/event</li>
+                                        <li>Basic analytics</li>
+                                        <li>Email support</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 border-primary">
+                                <div class="card-header bg-primary text-white text-center">
+                                    <h6 class="mb-0">Most Popular</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Pro</h5>
+                                    <h2 class="my-3">₹2,999/mo</h2>
+                                    <ul class="list-unstyled">
+                                        <li>Unlimited events</li>
+                                        <li>500 registrations/event</li>
+                                        <li>Advanced analytics</li>
+                                        <li>Priority support</li>
+                                        <li>Custom branding</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Enterprise</h5>
+                                    <h2 class="my-3">Custom</h2>
+                                    <ul class="list-unstyled">
+                                        <li>Unlimited everything</li>
+                                        <li>API access</li>
+                                        <li>Dedicated account manager</li>
+                                        <li>24/7 support</li>
+                                        <li>On-site training</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal">Register Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Eventsphere</h5>
+                    <p>Discover events happening around you and across India.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">Home</a></li>
+                        <li><a href="events.html" class="text-white">Events</a></li>
+                        <li><a href="about.html" class="text-white">About Us</a></li>
+                        <li><a href="contact.html" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <div class="d-flex gap-3 fs-4">
+                        <a href="#" class="text-light" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-light" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-light" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-light" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Eventsphere. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+    <script>
+        // Toggle password visibility
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+        
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // In a real application, you would send this data to your server
+            console.log('Login attempt:', { email, password });
+            
+            // For demo purposes, redirect to an organizer dashboard
+            window.location.href = 'organizer-dashboard.html';
+        });
+        
+        // Handle register form submission
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const institutionName = document.getElementById('institution-name').value;
+            const institutionType = document.getElementById('institution-type').value;
+            const adminName = document.getElementById('admin-name').value;
+            const adminEmail = document.getElementById('admin-email').value;
+            
+            // In a real application, you would send this data to your server
+            console.log('Registration attempt:', { institutionName, institutionType, adminName, adminEmail });
+            
+            // Close the modal and show success message
+            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            registerModal.hide();
+            
+            alert('Thank you for your application! We will review your details and get back to you within 1-2 business days.');
+        });
+    </script>
+</body>
+</html>

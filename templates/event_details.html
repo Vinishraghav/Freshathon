@@ -1,0 +1,412 @@
+{% extends "layout.html" %}
+{% block title %}{{ event.title }} - Eventsphere{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
+  #map {
+    height: 300px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .event-header {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .event-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    color: white;
+  }
+  .event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .event-meta-item {
+    display: flex;
+    align-items: center;
+  }
+  .event-meta-item i {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+  }
+  .organizer-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+  }
+  .share-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .share-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  .share-button:hover {
+    transform: translateY(-3px);
+  }
+  .facebook {
+    background-color: #3b5998;
+  }
+  .twitter {
+    background-color: #1da1f2;
+  }
+  .linkedin {
+    background-color: #0077b5;
+  }
+  .whatsapp {
+    background-color: #25d366;
+  }
+  .event-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  .event-highlights {
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .highlight-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .highlight-item i {
+    color: var(--primary-color);
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+  }
+  .attendees-preview {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .attendee-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-right: -15px;
+  }
+  .attendee-count {
+    background-color: var(--gray-light);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  .sticky-cta {
+    position: sticky;
+    top: 100px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Event Header -->
+  <div class="event-header" style="background-image: url('{{ event.image }}');">
+    <div class="event-header-overlay">
+      <span class="badge bg-primary mb-2">{{ event.category }}</span>
+      <h1 class="display-4 mb-2">{{ event.title }}</h1>
+      <div class="event-meta">
+        <div class="event-meta-item">
+          <i class="far fa-calendar-alt"></i>
+          <span>{{ event.date }}</span>
+        </div>
+        <div class="event-meta-item">
+          <i class="far fa-clock"></i>
+          <span>{{ event.time }}</span>
+        </div>
+        <div class="event-meta-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ event.venue }}</span>
+        </div>
+        <div class="event-meta-item">
+          <i class="fas fa-users"></i>
+          <span>{{ event.attendees }} attending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Event Description -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title mb-4">About This Event</h2>
+          <p class="event-description">{{ event.description }}</p>
+          
+          <!-- Event Highlights -->
+          <div class="event-highlights">
+            <h3 class="mb-3">Event Highlights</h3>
+            <div class="highlight-item">
+              <i class="fas fa-microphone"></i>
+              <div>
+                <h5 class="mb-1">Expert Speakers</h5>
+                <p class="mb-0">Learn from industry leaders and innovators in the field.</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <i class="fas fa-handshake"></i>
+              <div>
+                <h5 class="mb-1">Networking Opportunities</h5>
+                <p class="mb-0">Connect with professionals and expand your network.</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <i class="fas fa-laptop-code"></i>
+              <div>
+                <h5 class="mb-1">Interactive Workshops</h5>
+                <p class="mb-0">Participate in hands-on sessions to enhance your skills.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Organizer Info -->
+          <h3 class="mb-3">Organizer</h3>
+          <div class="d-flex align-items-center mb-4">
+            <img src="https://ui-avatars.com/api/?name={{ event.organizer }}&background=4361ee&color=fff&size=50" class="organizer-avatar" alt="{{ event.organizer }}">
+            <div>
+              <h5 class="mb-1">{{ event.organizer }}</h5>
+              <p class="mb-0 text-muted">Event Organizer</p>
+            </div>
+          </div>
+          
+          <!-- Attendees -->
+          <h3 class="mb-3">Attendees</h3>
+          <div class="attendees-preview">
+            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="attendee-avatar" alt="Attendee">
+            <img src="https://randomuser.me/api/portraits/men/44.jpg" class="attendee-avatar" alt="Attendee">
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="attendee-avatar" alt="Attendee">
+            <img src="https://randomuser.me/api/portraits/men/75.jpg" class="attendee-avatar" alt="Attendee">
+            <img src="https://randomuser.me/api/portraits/women/89.jpg" class="attendee-avatar" alt="Attendee">
+            <div class="attendee-count">+{{ event.attendees - 5 }}</div>
+          </div>
+          
+          <!-- Location -->
+          <h3 class="mb-3">Location</h3>
+          <p class="mb-3">{{ event.venue }}</p>
+          <div id="map" class="mb-4"></div>
+          
+          <!-- Share -->
+          <h3 class="mb-3">Share This Event</h3>
+          <div class="share-buttons">
+            <a href="#" class="share-button facebook" title="Share on Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="share-button twitter" title="Share on Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="share-button linkedin" title="Share on LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="share-button whatsapp" title="Share on WhatsApp">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <!-- Event CTA -->
+      <div class="card sticky-cta">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            {% if event.price == 0 %}
+              <h3 class="card-title mb-0">Free</h3>
+            {% else %}
+              <h3 class="card-title mb-0">₹{{ event.price }}</h3>
+            {% endif %}
+            <div class="d-flex align-items-center">
+              <div class="me-2">
+                {% for i in range(5) %}
+                  {% if i < event.rating|int %}
+                    <i class="fas fa-star text-warning"></i>
+                  {% elif i < event.rating %}
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                  {% else %}
+                    <i class="far fa-star text-warning"></i>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <span class="text-muted">({{ event.rating }})</span>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 mb-3">
+            <a href="{{ url_for('book_event', event_id=event.id) }}" class="btn btn-primary btn-lg">
+              <i class="fas fa-ticket-alt me-2"></i>Book Now
+            </a>
+            <button class="btn btn-outline-primary">
+              <i class="far fa-bookmark me-2"></i>Save for Later
+            </button>
+          </div>
+          
+          <div class="alert alert-info d-flex align-items-start">
+            <i class="fas fa-info-circle me-2 mt-1"></i>
+            <div>
+              <strong>Limited seats available!</strong> Only 30 spots left for this event.
+            </div>
+          </div>
+          
+          <hr>
+          
+          <h5 class="mb-3">Event Details</h5>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <i class="far fa-calendar-alt me-2 text-primary"></i>{{ event.date }}
+            </li>
+            <li class="mb-2">
+              <i class="far fa-clock me-2 text-primary"></i>{{ event.time }}
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-map-marker-alt me-2 text-primary"></i>{{ event.venue }}
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-tag me-2 text-primary"></i>{{ event.category }}
+            </li>
+            <li>
+              <i class="fas fa-building me-2 text-primary"></i>{{ event.organizer }}
+            </li>
+          </ul>
+          
+          <hr>
+          
+          <h5 class="mb-3">Need Help?</h5>
+          <p class="mb-2">Have questions about this event?</p>
+          <a href="#" class="btn btn-outline-secondary w-100">
+            <i class="fas fa-question-circle me-2"></i>Contact Organizer
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map
+    const map = L.map('map').setView([{{ event.latitude }}, {{ event.longitude }}], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Add marker for event location
+    const marker = L.marker([{{ event.latitude }}, {{ event.longitude }}]).addTo(map);
+    marker.bindPopup("<b>{{ event.title }}</b><br>{{ event.venue }}").openPopup();
+    
+    // Share buttons functionality
+    const shareButtons = document.querySelectorAll('.share-button');
+    shareButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const url = window.location.href;
+        const title = "{{ event.title }}";
+        
+        if (this.classList.contains('facebook')) {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        } else if (this.classList.contains('twitter')) {
+          window.open(`https://twitter.com/intent/tweet?url=${url}&text=${title}`, '_blank');
+        } else if (this.classList.contains('linkedin')) {
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        } else if (this.classList.contains('whatsapp')) {
+          window.open(`https://wa.me/?text=${title} ${url}`, '_blank');
+        }
+      });
+    });
+    
+    // Bookmark functionality
+    const bookmarkButton = document.querySelector('.btn-outline-primary');
+    bookmarkButton.addEventListener('click', function() {
+      const icon = this.querySelector('i');
+      
+      if (icon.classList.contains('far')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        this.innerHTML = '<i class="fas fa-bookmark me-2"></i>Saved';
+        
+        // Show toast notification
+        showToast('Event saved to your bookmarks!');
+      } else {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        this.innerHTML = '<i class="far fa-bookmark me-2"></i>Save for Later';
+        
+        // Show toast notification
+        showToast('Event removed from your bookmarks');
+      }
+    });
+    
+    // Toast notification function
+    function showToast(message) {
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-atomic', 'true');
+      
+      toast.innerHTML = `
+        <div class="toast-header">
+          <i class="fas fa-bookmark me-2 text-primary"></i>
+          <strong class="me-auto">Eventsphere</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          ${message}
+        </div>
+      `;
+      
+      // Add to document
+      document.body.appendChild(toast);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+  });
+</script>
+{% endblock %}

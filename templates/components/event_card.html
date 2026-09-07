@@ -1,0 +1,140 @@
+<!-- Event Card Component -->
+{% macro event_card(id, title, date, time, venue, image, category, description, price=None, rating=4.5, attendees=None, organizer=None, featured=False) %}
+<div class="card h-100 shadow-sm hover-card event-card {% if featured %}border-primary featured-card{% endif %}"
+     data-event-id="{{ id }}"
+     data-title="{{ title }}"
+     data-date="{{ date }}"
+     data-time="{{ time }}"
+     data-venue="{{ venue }}"
+     data-image="{{ image }}"
+     data-category="{{ category }}">
+  
+  {% if featured %}
+  <div class="featured-badge">
+    <i class="fas fa-award me-1"></i> Featured
+  </div>
+  {% endif %}
+
+  <div class="position-relative overflow-hidden">
+    <img src="{{ image or 'https://source.unsplash.com/random/800x600/?' + category|lower }}"
+         class="card-img-top"
+         alt="{{ title }}"
+         style="height: 200px; object-fit: cover; transition: transform 0.5s ease;">
+
+    <!-- Category Badge -->
+    <div class="position-absolute top-0 start-0 m-2">
+      {% if category %}
+      <span class="badge 
+        {% if category == 'Technology' %}bg-primary
+        {% elif category == 'Business' %}bg-success
+        {% elif category == 'Education' %}bg-info
+        {% elif category == 'Arts' %}bg-warning text-dark
+        {% elif category == 'Sports' %}bg-danger
+        {% else %}bg-secondary
+        {% endif %}">
+        {{ category }}
+      </span>
+      {% endif %}
+    </div>
+
+    <!-- New Event Badge -->
+    <div class="position-absolute top-0 end-0 m-2">
+      <span class="badge bg-success rounded-pill">New</span>
+    </div>
+
+    <!-- Bookmark Button -->
+    <button class="bookmark-button position-absolute bottom-0 end-0 m-2 btn btn-sm btn-light rounded-circle">
+      <i class="far fa-bookmark"></i>
+    </button>
+
+    <!-- Days Left Indicator -->
+    <div class="days-left-badge" style="display: none;">
+      <i class="fas fa-clock me-1"></i>
+      <span class="days-left-text"></span>
+    </div>
+  </div>
+
+  <div class="card-body d-flex flex-column">
+    <!-- Title with truncation -->
+    <h5 class="card-title mb-2" title="{{ title }}">
+      {% if title|length > 40 %}
+        {{ title[:40] }}...
+      {% else %}
+        {{ title }}
+      {% endif %}
+    </h5>
+
+    <!-- Rating -->
+    <div class="mb-2 event-rating" data-rating="{{ rating }}">
+      <div class="d-flex align-items-center">
+        <div class="stars-container me-1"></div>
+        <span class="small text-muted rating-value">({{ rating }})</span>
+      </div>
+    </div>
+
+    <!-- Event Details -->
+    <div class="event-details mb-3">
+      <p class="card-text mb-1 text-muted d-flex align-items-center" data-date="{{ date }}">
+        <i class="fas fa-calendar me-2 text-primary"></i>
+        <span>{{ date }}</span>
+      </p>
+      <p class="card-text mb-1 text-muted d-flex align-items-center">
+        <i class="fas fa-clock me-2 text-primary"></i>
+        <span>{{ time }}</span>
+      </p>
+      <p class="card-text mb-1 text-muted d-flex align-items-center">
+        <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+        <span>{{ venue }}</span>
+      </p>
+      {% if organizer %}
+      <p class="card-text mb-1 text-muted d-flex align-items-center">
+        <i class="fas fa-building me-2 text-primary"></i>
+        <span>{{ organizer }}</span>
+      </p>
+      {% endif %}
+      {% if price is not none %}
+      <p class="card-text mb-1 text-muted d-flex align-items-center">
+        <i class="fas fa-tag me-2 text-primary"></i>
+        <span>{% if price == 0 %}Free{% else %}₹{{ price }}{% endif %}</span>
+      </p>
+      {% endif %}
+    </div>
+
+    <!-- Description with truncation -->
+    {% if description %}
+    <p class="card-text small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+      {{ description }}
+    </p>
+    {% endif %}
+
+    <!-- Attendees indicator -->
+    {% if attendees %}
+    <div class="attendees-indicator mb-3">
+      <div class="d-flex align-items-center">
+        <div class="attendees-avatars me-2">
+          <!-- This would be actual user avatars in a real app -->
+          <div class="avatar-circle bg-primary">A</div>
+          <div class="avatar-circle bg-success">B</div>
+          <div class="avatar-circle bg-info">C</div>
+          <div class="avatar-circle bg-secondary">+{{ attendees - 3 }}</div>
+        </div>
+        <span class="small text-muted">{{ attendees }} attending</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="mt-auto d-flex justify-content-between">
+      <a href="/events/{{ id }}" class="btn btn-outline-primary rounded-pill">
+        <i class="fas fa-info-circle me-1"></i>
+        Details
+      </a>
+      <a href="#" class="btn btn-primary rounded-pill">
+        <i class="fas fa-ticket-alt me-1"></i>
+        Register
+      </a>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+<!-- End Event Card Component -->

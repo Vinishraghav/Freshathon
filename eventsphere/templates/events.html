@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Discover Events - Eventsphere{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Discover Events</h1>
+    
+    <!-- Search and Filter -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" id="search-input" class="form-control" placeholder="Search events by title, venue, or description">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select id="category-filter" class="form-select">
+                <option value="all">All Categories</option>
+                <option value="Technology">Technology</option>
+                <option value="Business">Business</option>
+                <option value="Arts">Arts</option>
+                <option value="Music">Music</option>
+                <option value="Sports">Sports</option>
+                <option value="Food">Food</option>
+                <option value="Health">Health</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="eventTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="all-events-tab" data-bs-toggle="tab" data-bs-target="#all-events-tab-pane" type="button" role="tab" aria-controls="all-events-tab-pane" aria-selected="true">
+                <i class="bi bi-globe me-2"></i>All Events
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="nearby-events-tab" data-bs-toggle="tab" data-bs-target="#nearby-events-tab-pane" type="button" role="tab" aria-controls="nearby-events-tab-pane" aria-selected="false">
+                <i class="bi bi-geo-alt me-2"></i>Nearby Events
+            </button>
+        </li>
+    </ul>
+    
+    <!-- Tab Content -->
+    <div class="tab-content" id="eventTabsContent">
+        <!-- All Events Tab -->
+        <div class="tab-pane fade show active" id="all-events-tab-pane" role="tabpanel" aria-labelledby="all-events-tab" tabindex="0">
+            <div id="all-events">
+                <!-- Events will be loaded here via JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Nearby Events Tab -->
+        <div class="tab-pane fade" id="nearby-events-tab-pane" role="tabpanel" aria-labelledby="nearby-events-tab" tabindex="0">
+            <div id="nearby-events">
+                <div class="text-center py-5">
+                    <p class="mb-3"><i class="bi bi-geo-alt fs-1 text-primary"></i></p>
+                    <h4>Finding Events Near You</h4>
+                    <p class="text-muted">Please allow location access when prompted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load all events when page loads
+        fetchAllEvents();
+        
+        // Handle URL parameters for category filtering
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        
+        if (categoryParam) {
+            const categoryFilter = document.getElementById('category-filter');
+            categoryFilter.value = categoryParam;
+            
+            // Trigger change event to filter events
+            const event = new Event('change');
+            categoryFilter.dispatchEvent(event);
+        }
+    });
+</script>
+{% endblock %}

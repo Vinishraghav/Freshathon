@@ -1,0 +1,206 @@
+<!-- Footer Component -->
+<footer class="footer-section bg-gradient-primary text-white pt-5">
+  <div class="container">
+    <!-- Newsletter Section -->
+    <div class="newsletter-section py-4 px-4 bg-dark bg-opacity-25 rounded-lg mb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <h4 class="mb-1">Stay Updated</h4>
+          <p class="mb-0 text-white-50">
+            Subscribe to our newsletter for the latest events and exclusive offers
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <div class="newsletter-form-container">
+            <form id="newsletter-form" class="d-flex">
+              <div class="input-group">
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  id="newsletter-email"
+                  placeholder="Your email address"
+                  required
+                  aria-label="Email address for newsletter"
+                />
+                <button class="btn btn-light" type="submit">
+                  <i class="fas fa-paper-plane me-2"></i>Subscribe
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="newsletter-success-container" style="display: none;">
+            <div class="alert alert-success mb-0 d-flex align-items-center">
+              <i class="fas fa-check-circle me-2 fs-5"></i>
+              <span>
+                Thank you for subscribing! Check your email for confirmation.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Footer Content -->
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-widget">
+          <h4 class="widget-title mb-4">
+            <i class="fas fa-calendar-alt me-2"></i>Eventsphere
+          </h4>
+          <p class="text-white-50">
+            Discover and attend the best events across India. Find tech conferences, 
+            cultural festivals, workshops, and more! Connect with like-minded 
+            individuals and expand your horizons.
+          </p>
+          <div class="social-links mt-4">
+            <a href="#" class="social-link" aria-label="Facebook" title="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="Twitter" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="Instagram" title="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="LinkedIn" title="LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="YouTube" title="YouTube">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <div class="footer-widget">
+          <h4 class="widget-title mb-4">Quick Links</h4>
+          <ul class="footer-links">
+            <li>
+              <a href="{{ url_for('index') }}" class="footer-link">
+                <i class="fas fa-home me-2"></i>Home
+              </a>
+            </li>
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-calendar-week me-2"></i>Events
+              </a>
+            </li>
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-tags me-2"></i>Categories
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('login') }}" class="footer-link">
+                <i class="fas fa-user-graduate me-2"></i>Student Login
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('login') }}" class="footer-link">
+                <i class="fas fa-building me-2"></i>Organizer Login
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <div class="footer-widget">
+          <h4 class="widget-title mb-4">Categories</h4>
+          <ul class="footer-links">
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-laptop me-2"></i>Technology
+              </a>
+            </li>
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-briefcase me-2"></i>Business
+              </a>
+            </li>
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-book me-2"></i>Education
+              </a>
+            </li>
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-palette me-2"></i>Arts & Music
+              </a>
+            </li>
+            <li>
+              <a href="#" class="footer-link">
+                <i class="fas fa-trophy me-2"></i>Sports
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-widget">
+          <h4 class="widget-title mb-4">Contact Us</h4>
+          <ul class="contact-info">
+            <li class="d-flex mb-3">
+              <div class="icon-box me-3">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="contact-text">
+                <span>123 College Street, Bangalore, India</span>
+              </div>
+            </li>
+            <li class="d-flex mb-3">
+              <div class="icon-box me-3">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="contact-text">
+                <span>info@eventsphere.com</span>
+              </div>
+            </li>
+            <li class="d-flex mb-3">
+              <div class="icon-box me-3">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="contact-text">
+                <span>+91 9876543210</span>
+              </div>
+            </li>
+            <li class="d-flex">
+              <div class="icon-box me-3">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="contact-text">
+                <span>Monday - Friday: 9:00 AM - 6:00 PM</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <hr class="footer-divider my-4" />
+
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <p class="copyright mb-0">
+          &copy; <span id="current-year">2025</span> Eventsphere. All rights reserved.
+        </p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <ul class="footer-bottom-links">
+          <li>
+            <a href="#" class="footer-bottom-link">Privacy Policy</a>
+          </li>
+          <li>
+            <a href="#" class="footer-bottom-link">Terms of Use</a>
+          </li>
+          <li>
+            <a href="#" class="footer-bottom-link">Cookie Policy</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- End Footer Component -->

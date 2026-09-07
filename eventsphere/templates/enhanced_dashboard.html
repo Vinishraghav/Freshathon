@@ -1,0 +1,1440 @@
+{% extends 'base.html' %} {% block title %}Event Management Dashboard -
+Eventsphere{% endblock %} {% block head %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Socket.IO -->
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+<style>
+  .dashboard-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .dashboard-icon {
+    font-size: 2.5rem;
+    opacity: 0.7;
+  }
+
+  .nav-pills .nav-link.active {
+    background-color: var(--primary-color);
+  }
+
+  .status-badge {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .status-badge.draft {
+    background-color: #6c757d;
+  }
+
+  .status-badge.published {
+    background-color: #198754;
+  }
+
+  .status-badge.cancelled {
+    background-color: #dc3545;
+  }
+
+  .status-badge.completed {
+    background-color: #0dcaf0;
+  }
+
+  .attendee-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .live-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    margin-right: 5px;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .event-action-btn {
+    width: 38px;
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.7rem;
+  }
+
+  .activity-timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .activity-timeline::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #dee2e6;
+  }
+
+  .activity-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .activity-icon {
+    position: absolute;
+    left: -30px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+
+  .activity-content {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .activity-time {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+
+  .quick-action-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .quick-action-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .quick-action-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .attendee-list {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .event-progress {
+    height: 8px;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-lg-2 bg-light p-0">
+      <div class="d-flex flex-column flex-shrink-0 p-3 h-100">
+        <div class="d-flex align-items-center mb-3">
+          <span class="fs-4 fw-semibold">Event Manager</span>
+        </div>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="#overview" class="nav-link active" data-bs-toggle="pill">
+              <i class="bi bi-speedometer2 me-2"></i>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#events" class="nav-link" data-bs-toggle="pill">
+              <i class="bi bi-calendar-event me-2"></i>
+              Events
+            </a>
+          </li>
+          <li>
+            <a href="#attendees" class="nav-link" data-bs-toggle="pill">
+              <i class="bi bi-people me-2"></i>
+              Attendees
+            </a>
+          </li>
+          <li>
+            <a href="#analytics" class="nav-link" data-bs-toggle="pill">
+              <i class="bi bi-graph-up me-2"></i>
+              Analytics
+            </a>
+          </li>
+          <li>
+            <a href="#live-management" class="nav-link" data-bs-toggle="pill">
+              <i class="bi bi-broadcast me-2"></i>
+              Live Management
+              <span class="live-indicator"></span>
+            </a>
+          </li>
+          <li>
+            <a href="#notifications" class="nav-link" data-bs-toggle="pill">
+              <i class="bi bi-bell me-2"></i>
+              Notifications
+              <span
+                class="badge bg-danger rounded-pill notification-badge"
+                id="notification-count"
+                >3</span
+              >
+            </a>
+          </li>
+          <li>
+            <a href="#settings" class="nav-link" data-bs-toggle="pill">
+              <i class="bi bi-gear me-2"></i>
+              Settings
+            </a>
+          </li>
+        </ul>
+        <hr />
+        <div class="dropdown">
+          <a
+            href="#"
+            class="d-flex align-items-center text-decoration-none dropdown-toggle"
+            id="dropdownUser1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="https://ui-avatars.com/api/?name={{ session.get('email', 'User') }}&background=random"
+              alt="User"
+              width="32"
+              height="32"
+              class="rounded-circle me-2"
+            />
+            <strong>{{ session.get('email', 'User').split('@')[0] }}</strong>
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-dark text-small shadow"
+            aria-labelledby="dropdownUser1"
+          >
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="{{ url_for('logout') }}"
+                >Sign out</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-10 p-4">
+      <div class="tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard Overview</h2>
+            <div>
+              <button
+                class="btn btn-outline-primary me-2"
+                id="refresh-dashboard"
+              >
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+              </button>
+              <a href="{{ url_for('create_event') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Create Event
+              </a>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="card dashboard-card h-100">
+                <div class="card-body">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-muted mb-1">Total Events</h6>
+                      <h3 class="mb-0" id="total-events-count">-</h3>
+                      <p class="text-success mb-0">
+                        <i class="bi bi-arrow-up"></i> 12% from last month
+                      </p>
+                    </div>
+                    <div class="dashboard-icon text-primary">
+                      <i class="bi bi-calendar-event"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card dashboard-card h-100">
+                <div class="card-body">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-muted mb-1">Total Attendees</h6>
+                      <h3 class="mb-0" id="total-attendees-count">-</h3>
+                      <p class="text-success mb-0">
+                        <i class="bi bi-arrow-up"></i> 18% from last month
+                      </p>
+                    </div>
+                    <div class="dashboard-icon text-success">
+                      <i class="bi bi-people"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card dashboard-card h-100">
+                <div class="card-body">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-muted mb-1">Live Now</h6>
+                      <h3 class="mb-0" id="live-events-count">-</h3>
+                      <p class="text-danger mb-0">
+                        <span class="live-indicator"></span> Active events
+                      </p>
+                    </div>
+                    <div class="dashboard-icon text-danger">
+                      <i class="bi bi-broadcast"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card dashboard-card h-100">
+                <div class="card-body">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="text-muted mb-1">Engagement Rate</h6>
+                      <h3 class="mb-0" id="engagement-rate">-</h3>
+                      <p class="text-success mb-0">
+                        <i class="bi bi-arrow-up"></i> 5% from last month
+                      </p>
+                    </div>
+                    <div class="dashboard-icon text-info">
+                      <i class="bi bi-bar-chart"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="row mb-4">
+            <div class="col-md-8">
+              <div class="card dashboard-card h-100">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0">Event Performance</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="eventPerformanceChart" height="250"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card dashboard-card h-100">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0">Attendee Demographics</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="attendeeDemographicsChart" height="250"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions and Recent Activity -->
+          <div class="row">
+            <div class="col-md-6">
+              <h5 class="mb-3">Quick Actions</h5>
+              <div class="row g-3">
+                <div class="col-6">
+                  <div class="card quick-action-card text-center">
+                    <div class="card-body">
+                      <div class="quick-action-icon text-primary">
+                        <i class="bi bi-plus-circle"></i>
+                      </div>
+                      <h6>Create Event</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="card quick-action-card text-center">
+                    <div class="card-body">
+                      <div class="quick-action-icon text-success">
+                        <i class="bi bi-send"></i>
+                      </div>
+                      <h6>Send Notification</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="card quick-action-card text-center">
+                    <div class="card-body">
+                      <div class="quick-action-icon text-info">
+                        <i class="bi bi-file-earmark-text"></i>
+                      </div>
+                      <h6>Generate Report</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="card quick-action-card text-center">
+                    <div class="card-body">
+                      <div class="quick-action-icon text-warning">
+                        <i class="bi bi-gear"></i>
+                      </div>
+                      <h6>Settings</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h5 class="mb-3">Recent Activity</h5>
+              <div class="card dashboard-card">
+                <div class="card-body p-0">
+                  <div class="activity-timeline p-3">
+                    <div class="activity-item">
+                      <div class="activity-icon bg-primary">
+                        <i class="bi bi-person-plus"></i>
+                      </div>
+                      <div class="activity-content">
+                        <p class="mb-1">
+                          New registration for
+                          <strong>Tech Conference 2025</strong>
+                        </p>
+                        <p class="activity-time mb-0">Just now</p>
+                      </div>
+                    </div>
+                    <div class="activity-item">
+                      <div class="activity-icon bg-success">
+                        <i class="bi bi-calendar-check"></i>
+                      </div>
+                      <div class="activity-content">
+                        <p class="mb-1">
+                          Event <strong>Startup Meetup</strong> is now live
+                        </p>
+                        <p class="activity-time mb-0">2 hours ago</p>
+                      </div>
+                    </div>
+                    <div class="activity-item">
+                      <div class="activity-icon bg-info">
+                        <i class="bi bi-chat-dots"></i>
+                      </div>
+                      <div class="activity-content">
+                        <p class="mb-1">
+                          New feedback received for
+                          <strong>Music Festival</strong>
+                        </p>
+                        <p class="activity-time mb-0">Yesterday</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Events Tab -->
+        <div class="tab-pane fade" id="events">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Event Management</h2>
+            <div>
+              <button class="btn btn-outline-secondary me-2" id="export-events">
+                <i class="bi bi-download me-1"></i> Export
+              </button>
+              <a href="{{ url_for('create_event') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Create Event
+              </a>
+            </div>
+          </div>
+
+          <!-- Event Filters -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="event-status-filter" class="form-label"
+                    >Status</label
+                  >
+                  <select class="form-select" id="event-status-filter">
+                    <option value="all" selected>All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="live">Live Now</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="event-category-filter" class="form-label"
+                    >Category</label
+                  >
+                  <select class="form-select" id="event-category-filter">
+                    <option value="all" selected>All Categories</option>
+                    <option value="technology">Technology</option>
+                    <option value="business">Business</option>
+                    <option value="arts">Arts</option>
+                    <option value="music">Music</option>
+                    <option value="sports">Sports</option>
+                    <option value="food">Food</option>
+                    <option value="health">Health</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="event-date-filter" class="form-label"
+                    >Date Range</label
+                  >
+                  <select class="form-select" id="event-date-filter">
+                    <option value="all" selected>All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="tomorrow">Tomorrow</option>
+                    <option value="this-week">This Week</option>
+                    <option value="this-month">This Month</option>
+                    <option value="past">Past Events</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="event-search" class="form-label">Search</label>
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="event-search"
+                      placeholder="Search events..."
+                    />
+                    <button class="btn btn-outline-secondary" type="button">
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Events Table -->
+          <div class="card">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Event</th>
+                      <th>Date & Time</th>
+                      <th>Status</th>
+                      <th>Attendees</th>
+                      <th>Category</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="events-table-body">
+                    <!-- Events will be loaded here -->
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="https://source.unsplash.com/random/800x600/?tech"
+                            class="rounded me-3"
+                            width="50"
+                            height="50"
+                            style="object-fit: cover"
+                          />
+                          <div>
+                            <h6 class="mb-0">Tech Conference 2025</h6>
+                            <small class="text-muted"
+                              >Chennai Convention Center</small
+                            >
+                          </div>
+                        </div>
+                      </td>
+                      <td>Apr 10, 2025 at 09:00</td>
+                      <td>
+                        <span class="badge status-badge published"
+                          >Published</span
+                        >
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="d-flex">
+                            <img
+                              src="https://ui-avatars.com/api/?name=John+Doe&background=random"
+                              class="attendee-avatar border border-white"
+                              style="margin-left: -10px; z-index: 1"
+                            />
+                            <img
+                              src="https://ui-avatars.com/api/?name=Jane+Smith&background=random"
+                              class="attendee-avatar border border-white"
+                              style="margin-left: -10px; z-index: 2"
+                            />
+                            <img
+                              src="https://ui-avatars.com/api/?name=Bob+Johnson&background=random"
+                              class="attendee-avatar border border-white"
+                              style="margin-left: -10px; z-index: 3"
+                            />
+                          </div>
+                          <span class="ms-2">250 registered</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge category-badge technology"
+                          >Technology</span
+                        >
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <a
+                            href="/events/1"
+                            class="btn btn-sm btn-outline-primary event-action-btn"
+                            title="View"
+                          >
+                            <i class="bi bi-eye"></i>
+                          </a>
+                          <a
+                            href="{{ url_for('edit_event', event_id='1') }}"
+                            class="btn btn-sm btn-outline-secondary event-action-btn"
+                            title="Edit"
+                          >
+                            <i class="bi bi-pencil"></i>
+                          </a>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-success event-action-btn"
+                            title="Go Live"
+                          >
+                            <i class="bi bi-broadcast"></i>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger event-action-btn"
+                            title="Delete"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="https://source.unsplash.com/random/800x600/?startup"
+                            class="rounded me-3"
+                            width="50"
+                            height="50"
+                            style="object-fit: cover"
+                          />
+                          <div>
+                            <h6 class="mb-0">Startup Meetup</h6>
+                            <small class="text-muted"
+                              >Bangalore Tech Park</small
+                            >
+                          </div>
+                        </div>
+                      </td>
+                      <td>Apr 15, 2025 at 18:00</td>
+                      <td>
+                        <span class="badge status-badge live"
+                          >Live Now <span class="live-indicator"></span
+                        ></span>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="d-flex">
+                            <img
+                              src="https://ui-avatars.com/api/?name=Alice+Brown&background=random"
+                              class="attendee-avatar border border-white"
+                              style="margin-left: -10px; z-index: 1"
+                            />
+                            <img
+                              src="https://ui-avatars.com/api/?name=Charlie+Green&background=random"
+                              class="attendee-avatar border border-white"
+                              style="margin-left: -10px; z-index: 2"
+                            />
+                          </div>
+                          <span class="ms-2">120 registered</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge category-badge business"
+                          >Business</span
+                        >
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <a
+                            href="/events/2"
+                            class="btn btn-sm btn-outline-primary event-action-btn"
+                            title="View"
+                          >
+                            <i class="bi bi-eye"></i>
+                          </a>
+                          <a
+                            href="{{ url_for('edit_event', event_id='2') }}"
+                            class="btn btn-sm btn-outline-secondary event-action-btn"
+                            title="Edit"
+                          >
+                            <i class="bi bi-pencil"></i>
+                          </a>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-warning event-action-btn"
+                            title="End Live"
+                          >
+                            <i class="bi bi-stop-circle"></i>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger event-action-btn"
+                            title="Delete"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer bg-white">
+              <nav aria-label="Events pagination">
+                <ul class="pagination justify-content-center mb-0">
+                  <li class="page-item disabled">
+                    <a
+                      class="page-link"
+                      href="#"
+                      tabindex="-1"
+                      aria-disabled="true"
+                      >Previous</a
+                    >
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Management Tab -->
+        <div class="tab-pane fade" id="live-management">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Live Event Management</h2>
+            <div>
+              <button class="btn btn-danger" id="emergency-broadcast">
+                <i class="bi bi-exclamation-triangle me-1"></i> Emergency
+                Broadcast
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Events -->
+          <div class="row mb-4">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header bg-white">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <h5 class="mb-0">
+                      <span class="live-indicator"></span> Startup Meetup
+                    </h5>
+                    <span class="badge bg-success">Live for 01:23:45</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row mb-4">
+                    <div class="col-md-6">
+                      <div class="card bg-light">
+                        <div class="card-body">
+                          <h6 class="card-title">Current Attendees</h6>
+                          <div
+                            class="d-flex justify-content-between align-items-center"
+                          >
+                            <h2 class="mb-0">78</h2>
+                            <span class="text-success"
+                              ><i class="bi bi-arrow-up"></i> 12 in last 10
+                              min</span
+                            >
+                          </div>
+                          <div class="progress mt-2 event-progress">
+                            <div
+                              class="progress-bar bg-success"
+                              role="progressbar"
+                              style="width: 65%"
+                              aria-valuenow="65"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            ></div>
+                          </div>
+                          <small class="text-muted"
+                            >65% of registered attendees</small
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card bg-light">
+                        <div class="card-body">
+                          <h6 class="card-title">Engagement Score</h6>
+                          <div
+                            class="d-flex justify-content-between align-items-center"
+                          >
+                            <h2 class="mb-0">8.4/10</h2>
+                            <span class="text-success"
+                              ><i class="bi bi-arrow-up"></i> 0.2 in last 10
+                              min</span
+                            >
+                          </div>
+                          <div class="progress mt-2 event-progress">
+                            <div
+                              class="progress-bar bg-primary"
+                              role="progressbar"
+                              style="width: 84%"
+                              aria-valuenow="84"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            ></div>
+                          </div>
+                          <small class="text-muted"
+                            >Based on interactions and feedback</small
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h6>Live Controls</h6>
+                  <div class="btn-group mb-4">
+                    <button class="btn btn-outline-primary">
+                      <i class="bi bi-send"></i> Send Announcement
+                    </button>
+                    <button class="btn btn-outline-success">
+                      <i class="bi bi-chat-dots"></i> Open Q&A
+                    </button>
+                    <button class="btn btn-outline-info">
+                      <i class="bi bi-bar-chart"></i> Launch Poll
+                    </button>
+                    <button class="btn btn-outline-warning">
+                      <i class="bi bi-camera-video"></i> Start Livestream
+                    </button>
+                    <button class="btn btn-outline-danger">
+                      <i class="bi bi-stop-circle"></i> End Event
+                    </button>
+                  </div>
+
+                  <h6>Live Feed</h6>
+                  <div class="card bg-light">
+                    <div
+                      class="card-body"
+                      style="max-height: 300px; overflow-y: auto"
+                    >
+                      <div class="activity-timeline">
+                        <div class="activity-item">
+                          <div class="activity-icon bg-success">
+                            <i class="bi bi-person-plus"></i>
+                          </div>
+                          <div class="activity-content">
+                            <p class="mb-1">
+                              New attendee joined: <strong>Rahul Sharma</strong>
+                            </p>
+                            <p class="activity-time mb-0">Just now</p>
+                          </div>
+                        </div>
+                        <div class="activity-item">
+                          <div class="activity-icon bg-info">
+                            <i class="bi bi-chat-dots"></i>
+                          </div>
+                          <div class="activity-content">
+                            <p class="mb-1">
+                              New question:
+                              <strong
+                                >"When will the next funding round
+                                open?"</strong
+                              >
+                            </p>
+                            <p class="activity-time mb-0">2 minutes ago</p>
+                          </div>
+                        </div>
+                        <div class="activity-item">
+                          <div class="activity-icon bg-warning">
+                            <i class="bi bi-hand-thumbs-up"></i>
+                          </div>
+                          <div class="activity-content">
+                            <p class="mb-1">
+                              Feedback received:
+                              <strong>4.8/5 stars</strong> from Priya Patel
+                            </p>
+                            <p class="activity-time mb-0">5 minutes ago</p>
+                          </div>
+                        </div>
+                        <div class="activity-item">
+                          <div class="activity-icon bg-primary">
+                            <i class="bi bi-share"></i>
+                          </div>
+                          <div class="activity-content">
+                            <p class="mb-1">
+                              Event shared on Twitter by
+                              <strong>Amit Kumar</strong>
+                            </p>
+                            <p class="activity-time mb-0">10 minutes ago</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card mb-4">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0">Attendee List</h5>
+                </div>
+                <div class="card-body p-0">
+                  <div class="list-group list-group-flush attendee-list">
+                    <div class="list-group-item">
+                      <div
+                        class="d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=random"
+                            class="attendee-avatar me-2"
+                          />
+                          <div>
+                            <h6 class="mb-0">Rahul Sharma</h6>
+                            <small class="text-muted"
+                              >Joined 2 minutes ago</small
+                            >
+                          </div>
+                        </div>
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-sm btn-outline-secondary"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                          >
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item" href="#">Message</a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#"
+                                >Make Presenter</a
+                              >
+                            </li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="#"
+                                >Remove</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="list-group-item">
+                      <div
+                        class="d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="https://ui-avatars.com/api/?name=Priya+Patel&background=random"
+                            class="attendee-avatar me-2"
+                          />
+                          <div>
+                            <h6 class="mb-0">Priya Patel</h6>
+                            <small class="text-muted"
+                              >Joined 15 minutes ago</small
+                            >
+                          </div>
+                        </div>
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-sm btn-outline-secondary"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                          >
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item" href="#">Message</a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#"
+                                >Make Presenter</a
+                              >
+                            </li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="#"
+                                >Remove</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="list-group-item">
+                      <div
+                        class="d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex align-items-center">
+                          <img
+                            src="https://ui-avatars.com/api/?name=Amit+Kumar&background=random"
+                            class="attendee-avatar me-2"
+                          />
+                          <div>
+                            <h6 class="mb-0">Amit Kumar</h6>
+                            <small class="text-muted"
+                              >Joined 20 minutes ago</small
+                            >
+                          </div>
+                        </div>
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-sm btn-outline-secondary"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                          >
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <a class="dropdown-item" href="#">Message</a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="#"
+                                >Make Presenter</a
+                              >
+                            </li>
+                            <li>
+                              <a class="dropdown-item text-danger" href="#"
+                                >Remove</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer bg-white">
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Search attendees..."
+                    />
+                    <button class="btn btn-outline-secondary" type="button">
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header bg-white">
+                  <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary">
+                      <i class="bi bi-megaphone me-2"></i> Send Reminder to
+                      Registered
+                    </button>
+                    <button class="btn btn-outline-success">
+                      <i class="bi bi-file-earmark-text me-2"></i> Download
+                      Attendee List
+                    </button>
+                    <button class="btn btn-outline-info">
+                      <i class="bi bi-share me-2"></i> Share Live Link
+                    </button>
+                    <button class="btn btn-outline-warning">
+                      <i class="bi bi-camera-video me-2"></i> Record Session
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Live Events -->
+          <h4 class="mb-3">Upcoming Live Events</h4>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>Event</th>
+                  <th>Date & Time</th>
+                  <th>Registrations</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img
+                        src="https://source.unsplash.com/random/800x600/?music"
+                        class="rounded me-3"
+                        width="50"
+                        height="50"
+                        style="object-fit: cover"
+                      />
+                      <div>
+                        <h6 class="mb-0">Music Festival</h6>
+                        <small class="text-muted">Mumbai Beach</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>May 5, 2025 at 16:00</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1" style="height: 8px">
+                        <div
+                          class="progress-bar bg-success"
+                          role="progressbar"
+                          style="width: 75%"
+                          aria-valuenow="75"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
+                      </div>
+                      <span class="ms-2">350/500</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge status-badge published">Published</span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-success">
+                      <i class="bi bi-broadcast me-1"></i> Go Live
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img
+                        src="https://source.unsplash.com/random/800x600/?coding"
+                        class="rounded me-3"
+                        width="50"
+                        height="50"
+                        style="object-fit: cover"
+                      />
+                      <div>
+                        <h6 class="mb-0">College Hackathon</h6>
+                        <small class="text-muted"
+                          >Delhi Technical University</small
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td>Apr 20, 2025 at 10:00</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="progress flex-grow-1" style="height: 8px">
+                        <div
+                          class="progress-bar bg-success"
+                          role="progressbar"
+                          style="width: 40%"
+                          aria-valuenow="40"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
+                      </div>
+                      <span class="ms-2">80/200</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge status-badge published">Published</span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-success">
+                      <i class="bi bi-broadcast me-1"></i> Go Live
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- More tabs will be added in the next sections -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  // Initialize Socket.IO
+  const socket = io();
+
+  // Dashboard data
+  let dashboardData = {
+    totalEvents: 0,
+    totalAttendees: 0,
+    liveEvents: 0,
+    engagementRate: "0%",
+    events: [],
+    attendees: [],
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fetch dashboard data
+    fetchDashboardData();
+
+    // Initialize charts
+    initializeCharts();
+
+    // Set up real-time updates
+    setupRealTimeUpdates();
+
+    // Refresh dashboard button
+    document
+      .getElementById("refresh-dashboard")
+      .addEventListener("click", fetchDashboardData);
+  });
+
+  function fetchDashboardData() {
+    // Simulate API call for now
+    setTimeout(() => {
+      dashboardData = {
+        totalEvents: 12,
+        totalAttendees: 850,
+        liveEvents: 2,
+        engagementRate: "78%",
+        events: [
+          { name: "Tech Conference", attendees: 250, engagement: 85 },
+          { name: "Startup Meetup", attendees: 120, engagement: 72 },
+          { name: "Music Festival", attendees: 350, engagement: 90 },
+          { name: "College Hackathon", attendees: 80, engagement: 65 },
+          { name: "Art Exhibition", attendees: 50, engagement: 70 },
+        ],
+        attendees: [
+          { category: "Students", count: 450 },
+          { category: "Professionals", count: 280 },
+          { category: "Others", count: 120 },
+        ],
+      };
+
+      updateDashboard();
+      updateCharts();
+    }, 500);
+  }
+
+  function updateDashboard() {
+    document.getElementById("total-events-count").textContent =
+      dashboardData.totalEvents;
+    document.getElementById("total-attendees-count").textContent =
+      dashboardData.totalAttendees;
+    document.getElementById("live-events-count").textContent =
+      dashboardData.liveEvents;
+    document.getElementById("engagement-rate").textContent =
+      dashboardData.engagementRate;
+  }
+
+  function initializeCharts() {
+    // Event Performance Chart
+    const eventPerformanceCtx = document
+      .getElementById("eventPerformanceChart")
+      .getContext("2d");
+    window.eventPerformanceChart = new Chart(eventPerformanceCtx, {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Attendees",
+            data: [],
+            backgroundColor: "rgba(78, 84, 200, 0.6)",
+            borderColor: "rgba(78, 84, 200, 1)",
+            borderWidth: 1,
+          },
+          {
+            label: "Engagement (%)",
+            data: [],
+            backgroundColor: "rgba(255, 126, 95, 0.6)",
+            borderColor: "rgba(255, 126, 95, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+
+    // Attendee Demographics Chart
+    const demographicsCtx = document
+      .getElementById("attendeeDemographicsChart")
+      .getContext("2d");
+    window.demographicsChart = new Chart(demographicsCtx, {
+      type: "doughnut",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            backgroundColor: [
+              "rgba(78, 84, 200, 0.8)",
+              "rgba(255, 126, 95, 0.8)",
+              "rgba(32, 201, 151, 0.8)",
+            ],
+            borderColor: [
+              "rgba(78, 84, 200, 1)",
+              "rgba(255, 126, 95, 1)",
+              "rgba(32, 201, 151, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+          },
+        },
+      },
+    });
+  }
+
+  function updateCharts() {
+    // Update Event Performance Chart
+    window.eventPerformanceChart.data.labels = dashboardData.events.map(
+      (event) => event.name
+    );
+    window.eventPerformanceChart.data.datasets[0].data =
+      dashboardData.events.map((event) => event.attendees);
+    window.eventPerformanceChart.data.datasets[1].data =
+      dashboardData.events.map((event) => event.engagement);
+    window.eventPerformanceChart.update();
+
+    // Update Demographics Chart
+    window.demographicsChart.data.labels = dashboardData.attendees.map(
+      (item) => item.category
+    );
+    window.demographicsChart.data.datasets[0].data =
+      dashboardData.attendees.map((item) => item.count);
+    window.demographicsChart.update();
+  }
+
+  function setupRealTimeUpdates() {
+    // Listen for real-time updates
+    socket.on("dashboard_update", function (data) {
+      // Update dashboard data
+      dashboardData = { ...dashboardData, ...data };
+      updateDashboard();
+      updateCharts();
+
+      // Show notification
+      showNotification("Dashboard updated with real-time data");
+    });
+
+    socket.on("new_registration", function (data) {
+      // Update attendee count
+      dashboardData.totalAttendees++;
+      document.getElementById("total-attendees-count").textContent =
+        dashboardData.totalAttendees;
+
+      // Add to activity timeline
+      addActivityItem(
+        "person-plus",
+        "primary",
+        `New registration for <strong>${data.eventName}</strong>`,
+        "Just now"
+      );
+
+      // Show notification
+      showNotification(`New registration for ${data.eventName}`);
+    });
+  }
+
+  function addActivityItem(icon, color, content, time) {
+    const timeline = document.querySelector(".activity-timeline");
+    const newItem = document.createElement("div");
+    newItem.className = "activity-item";
+    newItem.innerHTML = `
+            <div class="activity-icon bg-${color}">
+                <i class="bi bi-${icon}"></i>
+            </div>
+            <div class="activity-content">
+                <p class="mb-1">${content}</p>
+                <p class="activity-time mb-0">${time}</p>
+            </div>
+        `;
+
+    // Add at the top
+    timeline.insertBefore(newItem, timeline.firstChild);
+  }
+
+  function showNotification(message) {
+    // Implement browser notification
+    if (Notification.permission === "granted") {
+      new Notification("Eventsphere", {
+        body: message,
+        icon: "/static/img/logo.png",
+      });
+    }
+
+    // Also show in-app notification
+    const notificationCount = document.getElementById("notification-count");
+    notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
+  }
+</script>
+{% endblock %}

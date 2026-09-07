@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - Eventsphere</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+          <i class="fas fa-calendar-alt me-2"></i>Eventsphere
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}">
+                <i class="fas fa-home me-1"></i>Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}">
+                <i class="fas fa-sign-in-alt me-1"></i>Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('register') }}">
+                <i class="fas fa-user-plus me-1"></i>Register
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-primary text-white text-center py-4">
+              <h3 class="mb-0">
+                <i class="fas fa-user-plus me-2"></i>Create an Account
+              </h3>
+            </div>
+            <div class="card-body p-5">
+              <form action="{{ url_for('register') }}" method="post">
+                <div class="mb-4">
+                  <label for="name" class="form-label">Full Name</label>
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      ><i class="fas fa-user"></i
+                    ></span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="email" class="form-label">Email address</label>
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      ><i class="fas fa-envelope"></i
+                    ></span>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="password" class="form-label">Password</label>
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      ><i class="fas fa-lock"></i
+                    ></span>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="password"
+                      name="password"
+                      placeholder="Create a password"
+                      required
+                    />
+                  </div>
+                  <small class="text-muted"
+                    >Password must be at least 8 characters long with letters
+                    and numbers</small
+                  >
+                </div>
+                <div class="mb-4">
+                  <label for="confirm_password" class="form-label"
+                    >Confirm Password</label
+                  >
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      ><i class="fas fa-check-circle"></i
+                    ></span>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="confirm_password"
+                      name="confirm_password"
+                      placeholder="Confirm your password"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">User Type</label>
+                  <div class="d-flex gap-4">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="user_type"
+                        id="student"
+                        value="student"
+                        checked
+                      />
+                      <label class="form-check-label" for="student">
+                        <i class="fas fa-user-graduate me-1"></i>Student
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="user_type"
+                        id="organizer"
+                        value="organizer"
+                      />
+                      <label class="form-check-label" for="organizer">
+                        <i class="fas fa-users-cog me-1"></i>Organizer
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-4 form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="terms"
+                    required
+                  />
+                  <label class="form-check-label" for="terms">
+                    I agree to the <a href="#">Terms of Service</a> and
+                    <a href="#">Privacy Policy</a>
+                  </label>
+                </div>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                  </button>
+                </div>
+              </form>
+
+              <div class="mt-4 text-center">
+                <p>Or register with:</p>
+                <div class="d-flex justify-content-center gap-3">
+                  <a
+                    href="#"
+                    class="btn btn-outline-primary"
+                    aria-label="Register with Google"
+                    title="Register with Google"
+                  >
+                    <i class="fab fa-google"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="btn btn-outline-primary"
+                    aria-label="Register with Facebook"
+                    title="Register with Facebook"
+                  >
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="btn btn-outline-primary"
+                    aria-label="Register with Twitter"
+                    title="Register with Twitter"
+                  >
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer text-center py-3">
+              <p class="mb-0">
+                Already have an account?
+                <a href="{{ url_for('login') }}" class="fw-bold">Login here</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center">
+            <p>&copy; 2025 Eventsphere. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

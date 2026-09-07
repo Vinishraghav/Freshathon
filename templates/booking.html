@@ -1,0 +1,410 @@
+{% extends "layout.html" %}
+{% block title %}Book Event - Eventsphere{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
+  #map {
+    height: 400px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  .booking-steps {
+    position: relative;
+    counter-reset: step;
+  }
+  .booking-step {
+    position: relative;
+    padding-left: 50px;
+    margin-bottom: 30px;
+  }
+  .booking-step::before {
+    content: counter(step);
+    counter-increment: step;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  .booking-step::after {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 36px;
+    width: 2px;
+    height: calc(100% - 36px);
+    background-color: var(--gray-light);
+  }
+  .booking-step:last-child::after {
+    display: none;
+  }
+  .ticket-type {
+    border: 2px solid var(--gray-light);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .ticket-type:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+  }
+  .ticket-type.selected {
+    border-color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.05);
+  }
+  .ticket-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  .ticket-quantity {
+    width: 80px;
+  }
+  .event-details-card {
+    position: sticky;
+    top: 100px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <h1 class="mb-4">Book Event</h1>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Tech Innovation Summit</h2>
+          <p class="text-muted mb-4">
+            <i class="far fa-calendar-alt me-2"></i>June 15, 2025 | 
+            <i class="far fa-clock me-2"></i>10:00 AM - 4:00 PM | 
+            <i class="fas fa-map-marker-alt me-2"></i>Tech Hub, Bangalore
+          </p>
+          
+          <div class="booking-steps">
+            <!-- Step 1: Select Tickets -->
+            <div class="booking-step">
+              <h3>Select Tickets</h3>
+              
+              <div class="ticket-type selected" data-ticket-type="standard" data-price="1500">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h4 class="mb-1">Standard Ticket</h4>
+                    <p class="mb-0 text-muted">General admission with access to all sessions</p>
+                  </div>
+                  <div class="text-end">
+                    <div class="ticket-price">₹1,500</div>
+                    <div class="d-flex align-items-center mt-2">
+                      <button class="btn btn-sm btn-outline-secondary decrease-quantity" data-ticket-type="standard">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <input type="number" class="form-control form-control-sm mx-2 text-center ticket-quantity" 
+                             data-ticket-type="standard" value="1" min="0" max="10">
+                      <button class="btn btn-sm btn-outline-secondary increase-quantity" data-ticket-type="standard">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="ticket-type" data-ticket-type="vip" data-price="3000">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h4 class="mb-1">VIP Ticket</h4>
+                    <p class="mb-0 text-muted">Premium access with reserved seating and networking dinner</p>
+                  </div>
+                  <div class="text-end">
+                    <div class="ticket-price">₹3,000</div>
+                    <div class="d-flex align-items-center mt-2">
+                      <button class="btn btn-sm btn-outline-secondary decrease-quantity" data-ticket-type="vip">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <input type="number" class="form-control form-control-sm mx-2 text-center ticket-quantity" 
+                             data-ticket-type="vip" value="0" min="0" max="10">
+                      <button class="btn btn-sm btn-outline-secondary increase-quantity" data-ticket-type="vip">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="ticket-type" data-ticket-type="student" data-price="750">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h4 class="mb-1">Student Ticket</h4>
+                    <p class="mb-0 text-muted">Discounted rate for students with valid ID</p>
+                  </div>
+                  <div class="text-end">
+                    <div class="ticket-price">₹750</div>
+                    <div class="d-flex align-items-center mt-2">
+                      <button class="btn btn-sm btn-outline-secondary decrease-quantity" data-ticket-type="student">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <input type="number" class="form-control form-control-sm mx-2 text-center ticket-quantity" 
+                             data-ticket-type="student" value="0" min="0" max="10">
+                      <button class="btn btn-sm btn-outline-secondary increase-quantity" data-ticket-type="student">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Step 2: Attendee Information -->
+            <div class="booking-step">
+              <h3>Attendee Information</h3>
+              
+              <form id="attendee-form">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="name" required>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input type="email" class="form-control" id="email" required>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="phone" required>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="organization" class="form-label">Organization/Company</label>
+                  <input type="text" class="form-control" id="organization">
+                </div>
+                
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="newsletter">
+                    <label class="form-check-label" for="newsletter">
+                      Subscribe to event updates and newsletters
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+            <!-- Step 3: Venue & Location -->
+            <div class="booking-step">
+              <h3>Venue & Location</h3>
+              <p>The event will be held at Tech Hub, Bangalore. You can find directions and parking information below.</p>
+              
+              <div id="map" class="mb-3"></div>
+              
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <h5><i class="fas fa-car me-2"></i>Parking Information</h5>
+                  <p>Paid parking is available at the venue. Additional parking can be found at nearby public parking lots.</p>
+                </div>
+                <div class="col-md-6">
+                  <h5><i class="fas fa-bus me-2"></i>Public Transportation</h5>
+                  <p>The venue is accessible via bus routes 101, 205, and 306. The nearest metro station is Tech Park Station (2km).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card event-details-card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Booking Summary</h4>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Tech Innovation Summit</h5>
+          <p class="text-muted">
+            <i class="far fa-calendar-alt me-2"></i>June 15, 2025<br>
+            <i class="far fa-clock me-2"></i>10:00 AM - 4:00 PM
+          </p>
+          
+          <hr>
+          
+          <div id="ticket-summary">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Standard Ticket x1</span>
+              <span>₹1,500</span>
+            </div>
+          </div>
+          
+          <hr>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span id="subtotal">₹1,500</span>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>Service Fee</span>
+            <span id="service-fee">₹150</span>
+          </div>
+          
+          <div class="d-flex justify-content-between mb-2">
+            <span>GST (18%)</span>
+            <span id="tax">₹270</span>
+          </div>
+          
+          <hr>
+          
+          <div class="d-flex justify-content-between mb-3">
+            <strong>Total</strong>
+            <strong id="total" class="text-primary">₹1,920</strong>
+          </div>
+          
+          <div class="mb-3">
+            <label for="promo-code" class="form-label">Promo Code</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="promo-code" placeholder="Enter code">
+              <button class="btn btn-outline-primary" type="button">Apply</button>
+            </div>
+          </div>
+          
+          <div class="d-grid">
+            <button class="btn btn-primary btn-lg" id="proceed-to-payment">
+              <i class="fas fa-lock me-2"></i>Proceed to Payment
+            </button>
+          </div>
+          
+          <div class="text-center mt-3">
+            <small class="text-muted">
+              <i class="fas fa-shield-alt me-1"></i> Secure payment powered by Razorpay
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map
+    const map = L.map('map').setView([12.9716, 77.5946], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Add marker for event location
+    const marker = L.marker([12.9716, 77.5946]).addTo(map);
+    marker.bindPopup("<b>Tech Hub</b><br>Bangalore").openPopup();
+    
+    // Ticket selection
+    const ticketTypes = document.querySelectorAll('.ticket-type');
+    ticketTypes.forEach(ticket => {
+      ticket.addEventListener('click', function() {
+        this.classList.toggle('selected');
+      });
+    });
+    
+    // Quantity buttons
+    const increaseButtons = document.querySelectorAll('.increase-quantity');
+    const decreaseButtons = document.querySelectorAll('.decrease-quantity');
+    
+    increaseButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const ticketType = this.getAttribute('data-ticket-type');
+        const input = document.querySelector(`.ticket-quantity[data-ticket-type="${ticketType}"]`);
+        if (parseInt(input.value) < parseInt(input.max)) {
+          input.value = parseInt(input.value) + 1;
+          updateSummary();
+        }
+      });
+    });
+    
+    decreaseButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const ticketType = this.getAttribute('data-ticket-type');
+        const input = document.querySelector(`.ticket-quantity[data-ticket-type="${ticketType}"]`);
+        if (parseInt(input.value) > parseInt(input.min)) {
+          input.value = parseInt(input.value) - 1;
+          updateSummary();
+        }
+      });
+    });
+    
+    // Update summary when quantity changes
+    const quantityInputs = document.querySelectorAll('.ticket-quantity');
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', updateSummary);
+    });
+    
+    // Update booking summary
+    function updateSummary() {
+      const ticketSummary = document.getElementById('ticket-summary');
+      const subtotalElement = document.getElementById('subtotal');
+      const serviceFeeElement = document.getElementById('service-fee');
+      const taxElement = document.getElementById('tax');
+      const totalElement = document.getElementById('total');
+      
+      let summaryHTML = '';
+      let subtotal = 0;
+      
+      quantityInputs.forEach(input => {
+        const ticketType = input.getAttribute('data-ticket-type');
+        const quantity = parseInt(input.value);
+        const ticketElement = document.querySelector(`.ticket-type[data-ticket-type="${ticketType}"]`);
+        const price = parseInt(ticketElement.getAttribute('data-price'));
+        const ticketName = ticketElement.querySelector('h4').textContent;
+        
+        if (quantity > 0) {
+          const ticketTotal = quantity * price;
+          subtotal += ticketTotal;
+          
+          summaryHTML += `
+            <div class="d-flex justify-content-between mb-2">
+              <span>${ticketName} x${quantity}</span>
+              <span>₹${ticketTotal.toLocaleString()}</span>
+            </div>
+          `;
+        }
+      });
+      
+      ticketSummary.innerHTML = summaryHTML;
+      
+      const serviceFee = Math.round(subtotal * 0.10);
+      const tax = Math.round((subtotal + serviceFee) * 0.18);
+      const total = subtotal + serviceFee + tax;
+      
+      subtotalElement.textContent = `₹${subtotal.toLocaleString()}`;
+      serviceFeeElement.textContent = `₹${serviceFee.toLocaleString()}`;
+      taxElement.textContent = `₹${tax.toLocaleString()}`;
+      totalElement.textContent = `₹${total.toLocaleString()}`;
+    }
+    
+    // Proceed to payment button
+    const proceedButton = document.getElementById('proceed-to-payment');
+    proceedButton.addEventListener('click', function() {
+      // Validate form
+      const form = document.getElementById('attendee-form');
+      if (form.checkValidity()) {
+        alert('Redirecting to payment gateway...');
+        // In a real app, this would redirect to a payment gateway
+      } else {
+        form.reportValidity();
+      }
+    });
+  });
+</script>
+{% endblock %}

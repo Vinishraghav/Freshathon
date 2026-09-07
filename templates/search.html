@@ -1,0 +1,424 @@
+{% extends "layout.html" %}
+{% block title %}Search Events - Eventsphere{% endblock %}
+
+{% block extra_css %}
+<style>
+  .search-header {
+    background-color: var(--primary-color);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  .search-form {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .filter-card {
+    position: sticky;
+    top: 100px;
+  }
+  
+  .filter-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .filter-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .filter-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  .category-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .category-badge {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  
+  .category-badge.active {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+  }
+  
+  .price-slider {
+    margin-top: 1.5rem;
+  }
+  
+  .price-range {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  
+  .date-inputs {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .search-result-count {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .sort-dropdown {
+    min-width: 200px;
+  }
+  
+  .event-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 3rem 0;
+  }
+  
+  .no-results i {
+    font-size: 4rem;
+    color: var(--gray-light);
+    margin-bottom: 1rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Search Header -->
+<div class="search-header">
+  <div class="container">
+    <h1 class="text-center mb-4">Find Your Perfect Event</h1>
+    
+    <div class="search-form">
+      <form action="{{ url_for('search') }}" method="get">
+        <div class="input-group input-group-lg">
+          <input type="text" class="form-control" name="q" placeholder="Search for events, categories, or locations" value="{{ request.args.get('q', '') }}">
+          <button class="btn btn-light" type="submit">
+            <i class="fas fa-search me-2"></i>Search
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row">
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3 mb-4 mb-lg-0">
+      <div class="card filter-card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Filters</h5>
+          
+          <form id="filter-form" action="{{ url_for('search') }}" method="get">
+            <!-- Hidden input for search query -->
+            <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
+            
+            <!-- Category Filter -->
+            <div class="filter-section">
+              <div class="filter-title">Categories</div>
+              <div class="category-filter">
+                <span class="badge bg-light text-dark category-badge {% if not request.args.get('category') %}active{% endif %}" data-category="all">All</span>
+                <span class="badge bg-light text-dark category-badge {% if request.args.get('category') == 'Technology' %}active{% endif %}" data-category="Technology">Technology</span>
+                <span class="badge bg-light text-dark category-badge {% if request.args.get('category') == 'Arts' %}active{% endif %}" data-category="Arts">Arts</span>
+                <span class="badge bg-light text-dark category-badge {% if request.args.get('category') == 'Education' %}active{% endif %}" data-category="Education">Education</span>
+                <span class="badge bg-light text-dark category-badge {% if request.args.get('category') == 'Business' %}active{% endif %}" data-category="Business">Business</span>
+                <span class="badge bg-light text-dark category-badge {% if request.args.get('category') == 'Sports' %}active{% endif %}" data-category="Sports">Sports</span>
+              </div>
+              <input type="hidden" name="category" id="category-input" value="{{ request.args.get('category', '') }}">
+            </div>
+            
+            <!-- Price Range Filter -->
+            <div class="filter-section">
+              <div class="filter-title">Price Range</div>
+              <div class="price-slider">
+                <input type="range" class="form-range" id="price-range" min="0" max="5000" step="100" value="{{ request.args.get('max_price', 5000) }}">
+                <div class="price-range">
+                  <span>Free</span>
+                  <span>₹<span id="price-value">{{ request.args.get('max_price', 5000) }}</span></span>
+                </div>
+              </div>
+              <input type="hidden" name="max_price" id="max-price-input" value="{{ request.args.get('max_price', 5000) }}">
+            </div>
+            
+            <!-- Date Filter -->
+            <div class="filter-section">
+              <div class="filter-title">Date</div>
+              <div class="date-inputs">
+                <div class="mb-3">
+                  <label for="start-date" class="form-label small">From</label>
+                  <input type="date" class="form-control" id="start-date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+                </div>
+                <div class="mb-3">
+                  <label for="end-date" class="form-label small">To</label>
+                  <input type="date" class="form-control" id="end-date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Location Filter -->
+            <div class="filter-section">
+              <div class="filter-title">Location</div>
+              <select class="form-select" name="location">
+                <option value="">All Locations</option>
+                <option value="Bangalore" {% if request.args.get('location') == 'Bangalore' %}selected{% endif %}>Bangalore</option>
+                <option value="Delhi" {% if request.args.get('location') == 'Delhi' %}selected{% endif %}>Delhi</option>
+                <option value="Mumbai" {% if request.args.get('location') == 'Mumbai' %}selected{% endif %}>Mumbai</option>
+                <option value="Chennai" {% if request.args.get('location') == 'Chennai' %}selected{% endif %}>Chennai</option>
+                <option value="Hyderabad" {% if request.args.get('location') == 'Hyderabad' %}selected{% endif %}>Hyderabad</option>
+              </select>
+            </div>
+            
+            <!-- Free Events Only -->
+            <div class="filter-section">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="free-events" name="free_only" value="1" {% if request.args.get('free_only') %}checked{% endif %}>
+                <label class="form-check-label" for="free-events">
+                  Free Events Only
+                </label>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-primary">Apply Filters</button>
+              <a href="{{ url_for('search') }}" class="btn btn-outline-secondary">Clear Filters</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Search Results -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="search-result-count">
+          <strong>{{ events|length }}</strong> events found
+          {% if request.args.get('q') %}
+            for "<strong>{{ request.args.get('q') }}</strong>"
+          {% endif %}
+        </div>
+        
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-sort me-1"></i>Sort by: 
+            {% if request.args.get('sort') == 'date_asc' %}
+              Date (Earliest)
+            {% elif request.args.get('sort') == 'date_desc' %}
+              Date (Latest)
+            {% elif request.args.get('sort') == 'price_asc' %}
+              Price (Low to High)
+            {% elif request.args.get('sort') == 'price_desc' %}
+              Price (High to Low)
+            {% elif request.args.get('sort') == 'rating' %}
+              Rating
+            {% else %}
+              Relevance
+            {% endif %}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end sort-dropdown" aria-labelledby="sortDropdown">
+            <li><a class="dropdown-item {% if not request.args.get('sort') %}active{% endif %}" href="{{ url_for('search', q=request.args.get('q', ''), category=request.args.get('category', ''), max_price=request.args.get('max_price', ''), start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', ''), location=request.args.get('location', ''), free_only=request.args.get('free_only', '')) }}">Relevance</a></li>
+            <li><a class="dropdown-item {% if request.args.get('sort') == 'date_asc' %}active{% endif %}" href="{{ url_for('search', q=request.args.get('q', ''), category=request.args.get('category', ''), max_price=request.args.get('max_price', ''), start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', ''), location=request.args.get('location', ''), free_only=request.args.get('free_only', ''), sort='date_asc') }}">Date (Earliest)</a></li>
+            <li><a class="dropdown-item {% if request.args.get('sort') == 'date_desc' %}active{% endif %}" href="{{ url_for('search', q=request.args.get('q', ''), category=request.args.get('category', ''), max_price=request.args.get('max_price', ''), start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', ''), location=request.args.get('location', ''), free_only=request.args.get('free_only', ''), sort='date_desc') }}">Date (Latest)</a></li>
+            <li><a class="dropdown-item {% if request.args.get('sort') == 'price_asc' %}active{% endif %}" href="{{ url_for('search', q=request.args.get('q', ''), category=request.args.get('category', ''), max_price=request.args.get('max_price', ''), start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', ''), location=request.args.get('location', ''), free_only=request.args.get('free_only', ''), sort='price_asc') }}">Price (Low to High)</a></li>
+            <li><a class="dropdown-item {% if request.args.get('sort') == 'price_desc' %}active{% endif %}" href="{{ url_for('search', q=request.args.get('q', ''), category=request.args.get('category', ''), max_price=request.args.get('max_price', ''), start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', ''), location=request.args.get('location', ''), free_only=request.args.get('free_only', ''), sort='price_desc') }}">Price (High to Low)</a></li>
+            <li><a class="dropdown-item {% if request.args.get('sort') == 'rating' %}active{% endif %}" href="{{ url_for('search', q=request.args.get('q', ''), category=request.args.get('category', ''), max_price=request.args.get('max_price', ''), start_date=request.args.get('start_date', ''), end_date=request.args.get('end_date', ''), location=request.args.get('location', ''), free_only=request.args.get('free_only', ''), sort='rating') }}">Rating</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      {% if events %}
+        <div class="row">
+          {% for event in events %}
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div class="card h-100 event-card">
+                <div class="position-relative overflow-hidden">
+                  <img src="{{ event.image }}" class="card-img-top" alt="{{ event.title }}" style="height: 160px; object-fit: cover;">
+                  
+                  <!-- Category Badge -->
+                  <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge 
+                      {% if event.category == 'Technology' %}bg-primary
+                      {% elif event.category == 'Arts' %}bg-success
+                      {% elif event.category == 'Education' %}bg-info
+                      {% elif event.category == 'Workshop' %}bg-warning text-dark
+                      {% else %}bg-secondary
+                      {% endif %}">
+                      {{ event.category }}
+                    </span>
+                  </div>
+                  
+                  <!-- Bookmark Button -->
+                  <button class="bookmark-button position-absolute bottom-0 end-0 m-2 btn btn-sm btn-light rounded-circle" title="Bookmark this event">
+                    <i class="far fa-bookmark"></i>
+                  </button>
+                </div>
+                
+                <div class="card-body">
+                  <h5 class="card-title">{{ event.title }}</h5>
+                  
+                  <!-- Event Details -->
+                  <div class="mb-2">
+                    <p class="card-text mb-1 small text-muted">
+                      <i class="far fa-calendar-alt me-2 text-primary"></i>{{ event.date }}
+                    </p>
+                    <p class="card-text mb-1 small text-muted">
+                      <i class="fas fa-map-marker-alt me-2 text-primary"></i>{{ event.venue }}
+                    </p>
+                    <p class="card-text mb-1 small text-muted">
+                      <i class="fas fa-tag me-2 text-primary"></i>{% if event.price == 0 %}Free{% else %}₹{{ event.price }}{% endif %}
+                    </p>
+                  </div>
+                  
+                  <div class="d-flex justify-content-between mt-3">
+                    <a href="{{ url_for('event_details', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-info-circle me-1"></i>Details
+                    </a>
+                    <a href="{{ url_for('book_event', event_id=event.id) }}" class="btn btn-sm btn-primary">
+                      <i class="fas fa-ticket-alt me-1"></i>Book Now
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="no-results">
+          <i class="fas fa-search"></i>
+          <h3>No events found</h3>
+          <p class="text-muted">Try adjusting your search criteria or filters</p>
+          <a href="{{ url_for('search') }}" class="btn btn-primary mt-3">Clear All Filters</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Category filter
+    const categoryBadges = document.querySelectorAll('.category-badge');
+    const categoryInput = document.getElementById('category-input');
+    
+    categoryBadges.forEach(badge => {
+      badge.addEventListener('click', function() {
+        // Remove active class from all badges
+        categoryBadges.forEach(b => b.classList.remove('active'));
+        
+        // Add active class to clicked badge
+        this.classList.add('active');
+        
+        // Update hidden input value
+        const category = this.getAttribute('data-category');
+        categoryInput.value = category === 'all' ? '' : category;
+      });
+    });
+    
+    // Price range slider
+    const priceRange = document.getElementById('price-range');
+    const priceValue = document.getElementById('price-value');
+    const maxPriceInput = document.getElementById('max-price-input');
+    
+    priceRange.addEventListener('input', function() {
+      priceValue.textContent = this.value;
+      maxPriceInput.value = this.value;
+    });
+    
+    // Free events checkbox
+    const freeEventsCheckbox = document.getElementById('free-events');
+    
+    freeEventsCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        priceRange.value = 0;
+        priceValue.textContent = 0;
+        maxPriceInput.value = 0;
+        priceRange.disabled = true;
+      } else {
+        priceRange.disabled = false;
+      }
+    });
+    
+    // Initialize free events checkbox state
+    if (freeEventsCheckbox.checked) {
+      priceRange.value = 0;
+      priceValue.textContent = 0;
+      maxPriceInput.value = 0;
+      priceRange.disabled = true;
+    }
+    
+    // Bookmark buttons
+    const bookmarkButtons = document.querySelectorAll('.bookmark-button');
+    
+    bookmarkButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const icon = this.querySelector('i');
+        
+        if (icon.classList.contains('far')) {
+          icon.classList.remove('far');
+          icon.classList.add('fas');
+          this.setAttribute('title', 'Remove bookmark');
+          
+          // Show toast notification
+          showToast('Event added to your bookmarks!');
+        } else {
+          icon.classList.remove('fas');
+          icon.classList.add('far');
+          this.setAttribute('title', 'Bookmark this event');
+          
+          // Show toast notification
+          showToast('Event removed from your bookmarks');
+        }
+      });
+    });
+    
+    // Toast notification function
+    function showToast(message) {
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-atomic', 'true');
+      
+      toast.innerHTML = `
+        <div class="toast-header">
+          <i class="fas fa-bookmark me-2 text-primary"></i>
+          <strong class="me-auto">Eventsphere</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          ${message}
+        </div>
+      `;
+      
+      // Add to document
+      document.body.appendChild(toast);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+  });
+</script>
+{% endblock %}
